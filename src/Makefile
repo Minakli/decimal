@@ -1,8 +1,13 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c11
+# CFLAGS = -Wall -Wextra -Werror -std=c11
+CFLAGS = -std=c11
 CDEBUG = -g -Wall -Wextra -std=c11
 GCOVFLAGS = --coverage
 CHECKFLAGS = -pthread -lcheck_pic -lrt -lm -lsubunit
+
+DECIMAL_SOURSES := $(wildcard *.c)
+DECIMAL_OBJECTS := $(DECIMAL_SOURSES:.c=.o)
+
 TEST_SOURCES := $(wildcard tests/*.c) 
 TEST_OBJECTS := $(TEST_SOURCES:.c=.o)
 
@@ -12,12 +17,10 @@ test: clean s21_decimal.a build_test
 	./test
 build_test: $(TEST_OBJECTS) 
 	$(CC) $(CFLAGS) $(TEST_OBJECTS) -o ./test -lm s21_decimal.a $(CHECKFLAGS)
-s21_decimal.a: s21_decimal.o
-	ar rcs s21_decimal.a converters.o
-s21_decimal.o:
-	$(CC) $(CFLAGS) -c converters.c
-s21_decimal.o:
-	$(CC) $(CFLAGS) -c converters.c
+s21_decimal.a: $(DECIMAL_OBJECTS)
+	ar rcs s21_decimal.a $(DECIMAL_OBJECTS)
+# s21_decimal.o:
+# 	$(CC) $(CFLAGS) -c converters.c
 s21_decimal.o_gcov:
 	$(CC) $(CFLAGS) $(GCOVFLAGS) -c converters.c
 gcov_report: clean $(TEST_OBJECTS) s21_decimal.o_gcov

@@ -8,4 +8,6 @@
 
 Suite *tests_converters(void);
 
+Suite *tests_division(void);
+
 #endif

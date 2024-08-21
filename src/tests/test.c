@@ -3,7 +3,7 @@
 int main(void) {
   int failed = 0;
   int success = 0;
-  Suite *string_test[] = {tests_converters()};
+  Suite *string_test[] = {tests_converters(), tests_division()};
 
   for (int i = 0; i < sizeof(string_test) / sizeof(string_test[0]); i++) {
     SRunner *sr = srunner_create(string_test[i]);
