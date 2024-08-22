@@ -1,5 +1,6 @@
 #ifndef SRC_S21_DECIMAL_H_
 #define SRC_S21_DECIMAL_H_
+#include <stdbool.h>
 
 /// errors
 #define OK 0
@@ -47,4 +48,14 @@ int s21_is_equal(s21_decimal, s21_decimal);
 // Не равно
 int s21_is_not_equal(s21_decimal, s21_decimal);
 
+
+
+// Печать одного числа в двоичном виде
+void print_32_bit(int a);
+// Печать децимел в двоичном виде
+void print_decimal(s21_decimal a);
+// Проверка указанного бита
+bool check_bit(s21_decimal a, int num);
+// Установка указанного бита указанным значением
+void set_bit(s21_decimal *a, int num, bool choice);
 #endif  //  SRC_S21_DECIMAL_H_
