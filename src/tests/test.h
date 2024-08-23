@@ -10,4 +10,6 @@ Suite *tests_converters(void);
 
 Suite *tests_division(void);
 
+Suite *tests_functions(void);
+
 #endif

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-void print_32_bit(int a) {
+void print_32_binary(int a) {
         int mask = 0b00000001;
         printf("-- ");
     for(int i = 31; i > -1; i--) {
@@ -11,9 +11,9 @@ void print_32_bit(int a) {
     printf("\n");
 }
 
-void print_decimal(s21_decimal a){
+void print_binary(s21_decimal a){
     for(int i = 0; i < 4; i++) {
-        print_32_bit(a.bits[i]);
+        print_32_binary(a.bits[i]);
     }
 }
 bool check_bit(s21_decimal a, int num){
@@ -36,7 +36,33 @@ void set_bit(s21_decimal *a, int num, bool choice) {
         a->bits[1] = choice ? a->bits[1] | (mask << (num - 32)): a->bits[1] & (mask << (num - 32));
     } else if(num < 96) {
         a->bits[2] = choice ? a->bits[2] | (mask << (num - 64)): a->bits[2] & (mask << (num - 64));
-    } else if(num < 96) {
-        a->bits[3] = choice ? a->bits[3] | (mask << (num - 96)): a->bits[3] & (mask << (num - 96));
-    }
+    } 
+    // else if(num < 128) {
+    //     a->bits[3] = choice ? a->bits[3] | (mask << (num - 96)): a->bits[3] & (mask << (num - 96));
+    // } 
 }
+
+bool check_sign(s21_decimal a){
+    int mask = 1;
+    return (a.bits[3] & mask) ? true : false;
+}
+
+void set_sign(s21_decimal *a, bool choice){
+    int mask = choice ? 1: ~1;
+    a->bits[3] = choice ? a->bits[3] | mask : a->bits[3] & mask;
+}
+int get_scale(s21_decimal a){
+    unsigned mask = 255;
+    return (a.bits[3] >> 8) & mask;
+}
+
+void set_scale(s21_decimal *a, int num){
+    a->bits[3] = (((a->bits[3] >> 8)& 0) | num) << 8;
+    // a->bits[3] = a->bits[3] >> 8;
+    // a->bits[3] = a->bits[3] & 0;
+    // a->bits[3] = a->bits[3] | num;
+    // a->bits[3] = a->bits[3] << 8;
+}
+
+// void print_decimal(s21_decimal a){
+// }

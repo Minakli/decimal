@@ -1,7 +1,8 @@
 CC = gcc
 # CFLAGS = -Wall -Wextra -Werror -std=c11
 CFLAGS = -std=c11
-CDEBUG = -g -Wall -Wextra -std=c11
+# CDEBUG = -g -Wall -Wextra -std=c11
+CDEBUG = -g -std=c11
 GCOVFLAGS = --coverage
 CHECKFLAGS = -pthread -lcheck_pic -lrt -lm -lsubunit
 

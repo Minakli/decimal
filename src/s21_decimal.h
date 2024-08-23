@@ -50,12 +50,23 @@ int s21_is_not_equal(s21_decimal, s21_decimal);
 
 
 
-// Печать одного числа в двоичном виде
-void print_32_bit(int a);
-// Печать децимел в двоичном виде
-void print_decimal(s21_decimal a);
+// Печать одного числа в двоичном виде (УБРАТЬ!)
+void print_32_binary(int a);
+// Печать децимел в двоичном виде (УБРАТЬ!)
+void print_binary(s21_decimal a);
 // Проверка указанного бита
 bool check_bit(s21_decimal a, int num);
 // Установка указанного бита указанным значением
 void set_bit(s21_decimal *a, int num, bool choice);
+// Печать децимел в десятичном виде (УБРАТЬ!)
+void print_decimal(s21_decimal a);
+// Проверить знак
+bool check_sign(s21_decimal a);
+// Установить знак
+void set_sign(s21_decimal *a, bool choice);
+// Получить разряд
+int get_scale(s21_decimal a);
+// Установить разряд
+void set_scale(s21_decimal *a, int num);
+
 #endif  //  SRC_S21_DECIMAL_H_
