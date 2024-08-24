@@ -13,17 +13,17 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     // print_32_bit(a);
     // print_32_bit(~a);
     // print_decimal(value_1);
-    print_32_binary(value_1.bits[0]);
-    printf("value_1.bits[0]: %d", value_1.bits[0]);
+    // print_32_binary(value_1.bits[0]);
+    // printf("value_1.bits[0]: %d", value_1.bits[0]);
     value_1.bits[0] = value_1.bits[0] >> 5;
     value_1.bits[0] = value_1.bits[0] * 32;
     // set_bit(&value_1, 0, false);
     // set_bit(&value_1, 63, true);
-    printf("\n");
+    // printf("\n");
     // print_decimal(value_1);
-    print_32_binary(value_1.bits[0]);
-    printf("value_1.bits[0]: %d", value_1.bits[0]);
-    printf("\n");
+    // print_32_binary(value_1.bits[0]);
+    // printf("value_1.bits[0]: %d", value_1.bits[0]);
+    // printf("\n");
     // printf("check: %d\n", check_bit(value_1, 0) ? 1 : 0);
     if(0) {
         res = TOO_BIG;

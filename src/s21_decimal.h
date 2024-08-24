@@ -17,6 +17,10 @@ typedef struct {
   int bits[4];
 } s21_decimal;
 
+typedef struct {
+  int bits[8];
+} big_decimal;
+
 // Из int
 int s21_from_int_to_decimal(int src, s21_decimal *dst);
 // Из float
@@ -68,5 +72,8 @@ void set_sign(s21_decimal *a, bool choice);
 int get_scale(s21_decimal a);
 // Установить разряд
 void set_scale(s21_decimal *a, int num);
-
+// Проверка на ноль
+bool is_not_null(s21_decimal a);
+// Сдвиг по количеству и направлению (L or R)
+int shift_big_decimal(big_decimal *a, int value, char vector);
 #endif  //  SRC_S21_DECIMAL_H_

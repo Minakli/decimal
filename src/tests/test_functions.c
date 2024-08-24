@@ -7,6 +7,7 @@
 // void set_sign(s21_decimal *a, bool choice);
 // int get_scale(s21_decimal a);
 // void set_scale(s21_decimal *a, int num);
+// bool is_not_null(s21_decimal a);
 
 START_TEST(test_func_insert_1) {
     s21_decimal a = {{
@@ -88,6 +89,37 @@ START_TEST(test_func_insert_6) {
     }
 END_TEST
 
+START_TEST(test_func_insert_7) {
+    s21_decimal a = {{
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000
+    }};
+    ck_assert_int_eq(is_not_null(a), 0);
+    set_bit(&a, 55, true);
+    ck_assert_int_eq(is_not_null(a), 1);
+    }
+END_TEST
+
+START_TEST(test_func_insert_8) {
+    big_decimal a = {{
+      0b00000000000000000000000000000111,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000,
+      0b00000000000000000000000000000000
+    }};
+    ck_assert_int_eq(a.bits[0], 7);
+    shift_big_decimal(&a, 31, 'L');
+    ck_assert_int_eq(a.bits[0], -2147483648);
+    ck_assert_int_eq(a.bits[1], 3);
+}
+END_TEST
+
 Suite *tests_functions(void) {
   Suite *s = suite_create("Functions");
   TCase *tc_core = tcase_create("Core");
@@ -98,6 +130,8 @@ Suite *tests_functions(void) {
   tcase_add_test(tc_core, test_func_insert_4);
   tcase_add_test(tc_core, test_func_insert_5);
   tcase_add_test(tc_core, test_func_insert_6);
+  tcase_add_test(tc_core, test_func_insert_7);
+  tcase_add_test(tc_core, test_func_insert_8);
 
   suite_add_tcase(s, tc_core);
   return s;
