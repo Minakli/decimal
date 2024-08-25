@@ -82,9 +82,9 @@ big_decimal shift_big_decimal(big_decimal a, int value, char vector){
     } else if(vector == 'R'){
         for(int i = 6; i >= 0; i++){
         tmp = a.bits[i];
-        a.bits[i] = a.bits[i] >> value > 31 ? 31: value;
+        a.bits[i] = a.bits[i] >> (value > 31 ? 31: value);
         a.bits[i] |= memory;
-        memory = tmp << (32 - value > 31 ? 31: value);
+        memory = tmp << (32 - (value > 31 ? 31: value));
         }
     }
     value -= 31;

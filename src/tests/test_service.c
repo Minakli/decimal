@@ -117,6 +117,7 @@ START_TEST(test_func_insert_8) {
     ck_assert_int_eq(shift_big_decimal(a, 31, 'L').bits[0], 2147483648);
     ck_assert_int_eq(shift_big_decimal(a, 32, 'L').bits[0], 0);
     ck_assert_int_eq(shift_big_decimal(a, 32, 'L').bits[1], 7);
+    ck_assert_int_eq(shift_big_decimal(a, 64, 'L').bits[2], 7);
 }
 END_TEST
 
