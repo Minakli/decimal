@@ -29,13 +29,12 @@ bool check_bit(s21_decimal a, int num){
     return res;
 }
 void set_bit(s21_decimal *a, int num, bool choice) {
-    unsigned mask = choice ? 1 : ~1;
     if(num < 32) {
-        a->bits[0] = choice ? a->bits[0] | (mask << num): a->bits[0] & (mask << num);
+        a->bits[0] = choice ? a->bits[0] | (1 << num): a->bits[0] & (~1 << num);
     } else if(num < 64){
-        a->bits[1] = choice ? a->bits[1] | (mask << (num - 32)): a->bits[1] & (mask << (num - 32));
+        a->bits[1] = choice ? a->bits[1] | (1 << (num - 32)): a->bits[1] & (~1 << (num - 32));
     } else if(num < 96) {
-        a->bits[2] = choice ? a->bits[2] | (mask << (num - 64)): a->bits[2] & (mask << (num - 64));
+        a->bits[2] = choice ? a->bits[2] | (1 << (num - 64)): a->bits[2] & (~1 << (num - 64));
     } 
     // else if(num < 128) {
     //     a->bits[3] = choice ? a->bits[3] | (mask << (num - 96)): a->bits[3] & (mask << (num - 96));
@@ -43,17 +42,14 @@ void set_bit(s21_decimal *a, int num, bool choice) {
 }
 
 bool check_sign(s21_decimal a){
-    unsigned mask = 1;
-    return (a.bits[3] & mask) ? true : false;
+    return (a.bits[3] & 1) ? true : false;
 }
 
 void set_sign(s21_decimal *a, bool choice){
-    unsigned mask = choice ? 1: ~1;
-    a->bits[3] = choice ? a->bits[3] | mask : a->bits[3] & mask;
+    a->bits[3] = choice ? a->bits[3] | 1 : a->bits[3] & ~1;
 }
 int get_scale(s21_decimal a){
-    unsigned mask = 255;
-    return (a.bits[3] >> 8) & mask;
+    return (a.bits[3] >> 8) & 255;
 }
 
 void set_scale(s21_decimal *a, int num){
@@ -70,7 +66,6 @@ bool is_not_null(s21_decimal a){
 
 big_decimal shift_big_decimal(big_decimal a, int value, char vector){
     unsigned memory = 0, tmp = 0;
-    printf("value: %d\n", value);
     while(value > 0) {
     if(vector == 'L'){ 
     for(int i = 0; i < 7; i++){
