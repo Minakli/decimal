@@ -68,29 +68,37 @@ bool is_not_null(s21_decimal a){
     return (a.bits[0] == a.bits[1] == a.bits[2] == 0) ? false : true;
 }
 
-int shift_big_decimal(big_decimal *a, int value, char vector){
-    int err = 0, memory = 0, tmp = 0;
-    if(value >= 0 || value < 32) {
+big_decimal shift_big_decimal(big_decimal a, int value, char vector){
+    int memory = 0, tmp = 0;
+    big_decimal result = {0};
+    if(value >= 0 && value < 32) {
     if(vector == 'L'){ 
     for(int i = 0; i < 7; i++){
-        tmp = a->bits[i];
-        a->bits[i] <<= value;
-        a->bits[i] |= memory;
+        tmp = a.bits[i];
+        result.bits[i] = a.bits[i] << value;
+        result.bits[i] |= memory;
         memory = tmp >> (32 - value);
         }
     } else if(vector == 'R'){
         for(int i = 6; i >= 0; i++){
-        tmp = a->bits[i];
-        a->bits[i] >>= value;
-        a->bits[i] |= memory;
+        tmp = a.bits[i];
+        result.bits[i] = a.bits[i] >> value;
+        result.bits[i] |= memory;
         memory = tmp << (32 - value);
         }
-    }} else {
-        err = 1;
-    }
-    return err;
+    }} 
+    return result;
 }
+
+big_decimal big_x10(big_decimal a){
+    // return big_decimal_add(shift_big_decimal(a, 3, 'L'),shift_big_decimal(a, 1, 'L'), &res);
+}
+
+
+
 // void print_decimal(s21_decimal a){
 // }
+
 // Биг децимел
 // Шифт 
+// Биг Умножить на 10

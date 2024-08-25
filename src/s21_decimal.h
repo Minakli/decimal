@@ -75,5 +75,5 @@ void set_scale(s21_decimal *a, int num);
 // Проверка на ноль
 bool is_not_null(s21_decimal a);
 // Сдвиг по количеству и направлению (L or R)
-int shift_big_decimal(big_decimal *a, int value, char vector);
+big_decimal shift_big_decimal(big_decimal a, int value, char vector);
 #endif  //  SRC_S21_DECIMAL_H_
