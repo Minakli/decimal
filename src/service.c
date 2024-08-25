@@ -70,24 +70,26 @@ bool is_not_null(s21_decimal a){
 
 big_decimal shift_big_decimal(big_decimal a, int value, char vector){
     unsigned memory = 0, tmp = 0;
-    big_decimal result = {0};
-    if(value >= 0 && value < 32) {
+    printf("value: %d\n", value);
+    while(value > 0) {
     if(vector == 'L'){ 
     for(int i = 0; i < 7; i++){
         tmp = a.bits[i];
-        result.bits[i] = a.bits[i] << value;
-        result.bits[i] |= memory;
-        memory = tmp >> (32 - value);
+        a.bits[i] = a.bits[i] << (value > 31 ? 31: value);
+        a.bits[i] |= memory;
+        memory = tmp >> (32 - (value > 31 ? 31: value));
         }
     } else if(vector == 'R'){
         for(int i = 6; i >= 0; i++){
         tmp = a.bits[i];
-        result.bits[i] = a.bits[i] >> value;
-        result.bits[i] |= memory;
-        memory = tmp << (32 - value);
+        a.bits[i] = a.bits[i] >> value > 31 ? 31: value;
+        a.bits[i] |= memory;
+        memory = tmp << (32 - value > 31 ? 31: value);
         }
-    }} 
-    return result;
+    }
+    value -= 31;
+    } 
+    return a;
 }
 
 big_decimal big_x10(big_decimal a){

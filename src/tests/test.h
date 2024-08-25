@@ -3,6 +3,7 @@
 
 #include <check.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "../s21_decimal.h"
 
