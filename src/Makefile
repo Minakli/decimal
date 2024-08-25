@@ -45,3 +45,4 @@ clean:
 	rm -f test_gcov
 	rm -f ./*.gcno ./*.gcda ./*.info
 	rm -rf ./gcov_report
+	rm -rf tests/*.o

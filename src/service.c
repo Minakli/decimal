@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 void print_32_binary(int a) {
-        int mask = 0b00000001;
+        unsigned mask = 0b00000001;
         printf("-- ");
     for(int i = 31; i > -1; i--) {
         printf("%d", (a >> i) & mask);
@@ -18,7 +18,7 @@ void print_binary(s21_decimal a){
 }
 bool check_bit(s21_decimal a, int num){
     bool res = false;
-    int mask = 1;
+    unsigned mask = 1;
     if(num < 32) {
         res = (a.bits[0] >> num) & mask ? true : false;
     } else if(num < 64){
@@ -29,7 +29,7 @@ bool check_bit(s21_decimal a, int num){
     return res;
 }
 void set_bit(s21_decimal *a, int num, bool choice) {
-    int mask = choice ? 1 : ~1;
+    unsigned mask = choice ? 1 : ~1;
     if(num < 32) {
         a->bits[0] = choice ? a->bits[0] | (mask << num): a->bits[0] & (mask << num);
     } else if(num < 64){
@@ -43,12 +43,12 @@ void set_bit(s21_decimal *a, int num, bool choice) {
 }
 
 bool check_sign(s21_decimal a){
-    int mask = 1;
+    unsigned mask = 1;
     return (a.bits[3] & mask) ? true : false;
 }
 
 void set_sign(s21_decimal *a, bool choice){
-    int mask = choice ? 1: ~1;
+    unsigned mask = choice ? 1: ~1;
     a->bits[3] = choice ? a->bits[3] | mask : a->bits[3] & mask;
 }
 int get_scale(s21_decimal a){
@@ -69,7 +69,7 @@ bool is_not_null(s21_decimal a){
 }
 
 big_decimal shift_big_decimal(big_decimal a, int value, char vector){
-    int memory = 0, tmp = 0;
+    unsigned memory = 0, tmp = 0;
     big_decimal result = {0};
     if(value >= 0 && value < 32) {
     if(vector == 'L'){ 

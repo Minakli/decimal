@@ -14,11 +14,11 @@
 #define TRUE 1
 
 typedef struct {
-  int bits[4];
+  unsigned bits[4];
 } s21_decimal;
 
 typedef struct {
-  int bits[8];
+  unsigned bits[8];
 } big_decimal;
 
 // Из int
