@@ -1,6 +1,7 @@
 #ifndef SRC_S21_DECIMAL_H_
 #define SRC_S21_DECIMAL_H_
 #include <stdbool.h>
+#include <stdio.h>
 
 /// errors
 #define OK 0
@@ -51,8 +52,6 @@ int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal, s21_decimal);
 // Не равно
 int s21_is_not_equal(s21_decimal, s21_decimal);
-
-
 
 // Печать одного числа в двоичном виде (УБРАТЬ!)
 void print_32_binary(int a);
