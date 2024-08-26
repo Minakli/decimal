@@ -12,29 +12,13 @@ void print_binary(s21_decimal a) {
   for (int i = 0; i < 4; i++) print_32_binary(a.bits[i]);
 }
 
-bool check_bit(s21_decimal a, int num) {
-  bool res = false;
-  unsigned mask = 1;
-  if (num < 32) {
-    res = (a.bits[0] >> num) & mask ? true : false;
-  } else if (num < 64) {
-    res = (a.bits[1] >> num) & mask ? true : false;
-  } else if (num < 96) {
-    res = (a.bits[2] >> num) & mask ? true : false;
-  }
-  return res;
+bool check_bit(big_decimal a, int num) {
+  return (a.bits[num / 32] >> (num % 32)) & 1 ? true : false;
 }
 
-void set_bit(s21_decimal *a, int num, bool choice) {
-  if (num < 32) {
-    a->bits[0] = choice ? a->bits[0] | (1 << num) : a->bits[0] & (~1 << num);
-  } else if (num < 64) {
-    a->bits[1] = choice ? a->bits[1] | (1 << (num - 32))
-                        : a->bits[1] & (~1 << (num - 32));
-  } else if (num < 96) {
-    a->bits[2] = choice ? a->bits[2] | (1 << (num - 64))
-                        : a->bits[2] & (~1 << (num - 64));
-  }
+void set_bit(big_decimal *a, int num, bool choice) {
+  a->bits[num / 32] =
+      choice ? a->bits[0] | (1 << (num % 32)) : a->bits[0] & (~1 << (num % 32));
 }
 
 bool check_sign(s21_decimal a) { return (a.bits[3] & 1) ? true : false; }
@@ -76,6 +60,21 @@ big_decimal shift_big_decimal(big_decimal a, int value, char vector) {
   return a;
 }
 
+big_decimal to_big(s21_decimal a) {
+  big_decimal b = {0};
+  for (int i = 0; i < 3; i++) b.bits[i] = a.bits[i];
+  b.bits[7] = a.bits[3];
+  return b;
+}
+
+s21_decimal from_big(big_decimal a) {
+  // Думаю, здесь будет округление ==================
+  s21_decimal b = {0};
+  for (int i = 0; i < 3; i++) b.bits[i] = a.bits[i];
+  b.bits[3] = a.bits[7];
+  return b;
+}
+
 big_decimal big_x10(big_decimal a) {
   // return big_decimal_add(shift_big_decimal(a, 3, 'L'),shift_big_decimal(a, 1,
   // 'L'), &res);
@@ -83,3 +82,5 @@ big_decimal big_x10(big_decimal a) {
 
 // void print_decimal(s21_decimal a){
 // }
+
+// Проверка на бесконечность

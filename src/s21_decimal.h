@@ -58,9 +58,9 @@ void print_32_binary(int a);
 // Печать децимел в двоичном виде (УБРАТЬ!)
 void print_binary(s21_decimal a);
 // Проверка указанного бита
-bool check_bit(s21_decimal a, int num);
+bool check_bit(big_decimal a, int num);
 // Установка указанного бита указанным значением
-void set_bit(s21_decimal *a, int num, bool choice);
+void set_bit(big_decimal *a, int num, bool choice);
 // Печать децимел в десятичном виде (УБРАТЬ!)
 void print_decimal(s21_decimal a);
 // Проверить знак
@@ -75,4 +75,8 @@ void set_scale(s21_decimal *a, int num);
 bool is_not_null(s21_decimal a);
 // Сдвиг по количеству и направлению (L or R)
 big_decimal shift_big_decimal(big_decimal a, int value, char vector);
+// Перевод в биг децимел
+big_decimal to_big(s21_decimal a);
+// Перевод из биг в децимел
+s21_decimal from_big(big_decimal a);
 #endif  //  SRC_S21_DECIMAL_H_

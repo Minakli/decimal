@@ -4,28 +4,29 @@
 #include "s21_decimal.h"
 
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+  // Умножать 1 на 10, пока не станет больше, чем 2, добавлять по 1 в порядок
+  // Найти старший бит 1 числа
+  // Найти старший бит 2 числа
+  // Сдвинуть 1 число до уравнивания старших бит
+  // Записать количество сдвигов?? Да!
+  // Вычесть из n цифр 1 числа n цифр второго и получить остаток
+  // Если вычитается, записать 1 в результат
+  // Снести цифру, после n цифр первого числа и добавить к остатку (можно
+  // делать, сколько было сдвигов) Дописать в конец результата 1 или 0 (вычлось
+  // или нет)(дописываь при кажом сносе)(зациклить) Вычесть из n цифр 1 числа n
+  // цифр остатка и получить новый остаток Конечный остаток умножать на 10
+  // (добавляя в порядок) и повторять весь процесс.
+  big_decimal divisible = to_big(value_1);
+  big_decimal divider = to_big(value_2);
   int res = OK;
-  value_1.bits[0] = 100000;
-  value_1.bits[1] = 100;
-  value_1.bits[2] = 1000000;
-  value_1.bits[3] = 199999999;
-  // int a = 0b10000011;
-  // unsigned int b = 0b00000000;
-  // print_32_bit(a);
-  // print_32_bit(~a);
-  // print_decimal(value_1);
-  // print_32_binary(value_1.bits[0]);
-  // printf("value_1.bits[0]: %d", value_1.bits[0]);
-  value_1.bits[0] = value_1.bits[0] >> 5;
-  value_1.bits[0] = value_1.bits[0] * 32;
-  // set_bit(&value_1, 0, false);
-  // set_bit(&value_1, 63, true);
-  // printf("\n");
-  // print_decimal(value_1);
-  // print_32_binary(value_1.bits[0]);
-  // printf("value_1.bits[0]: %d", value_1.bits[0]);
-  // printf("\n");
-  // printf("check: %d\n", check_bit(value_1, 0) ? 1 : 0);
+  int max_bit_1 = 0, max_bit_2 = 0;
+  for (int i = 32 * 7 - 1; i >= 0 && !max_bit_1; i--) {
+    if (check_bit(divisible, i)) max_bit_1 = i;
+  }
+  for (int i = 32 * 7 - 1; i >= 0 && !max_bit_2; i--) {
+    if (check_bit(divider, i)) max_bit_1 = 2;
+  }
+
   if (0) {
     res = TOO_BIG;
   } else if (0) {
