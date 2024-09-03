@@ -56,11 +56,11 @@ int s21_is_not_equal(s21_decimal, s21_decimal);
 // Печать одного числа в двоичном виде (УБРАТЬ!)
 void print_32_binary(int a);
 // Печать децимел в двоичном виде (УБРАТЬ!)
-void print_binary(s21_decimal a);
+void print_binary(big_decimal a);
 // Проверка указанного бита
 bool check_bit(big_decimal a, int num);
 // Установка указанного бита указанным значением
-void set_bit(big_decimal *a, int num, bool choice);
+void set_bit(big_decimal *a, int num, int choice);
 // Печать децимел в десятичном виде (УБРАТЬ!)
 void print_decimal(s21_decimal a);
 // Проверить знак
@@ -68,11 +68,11 @@ bool check_sign(s21_decimal a);
 // Установить знак
 void set_sign(s21_decimal *a, bool choice);
 // Получить разряд
-int get_scale(s21_decimal a);
+int get_scale(big_decimal a);
 // Установить разряд
-void set_scale(s21_decimal *a, int num);
+void set_scale(big_decimal *a, int num);
 // Проверка на ноль
-bool is_not_null(s21_decimal a);
+bool is_not_null(big_decimal a);
 // Сдвиг по количеству и направлению (L or R)
 big_decimal shift_big_decimal(big_decimal a, int value, char vector);
 // Перевод в биг децимел

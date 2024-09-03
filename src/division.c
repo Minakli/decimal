@@ -18,6 +18,8 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   // (добавляя в порядок) и повторять весь процесс.
   big_decimal divisible = to_big(value_1);
   big_decimal divider = to_big(value_2);
+  big_decimal tmp = {{0,0,0,0,0,0,0,0}};
+  big_decimal tmp_res = to_big(*result);
   int res = OK;
   int max_bit_1 = 0, max_bit_2 = 0;
   for (int i = 32 * 7 - 1; i >= 0 && !max_bit_1; i--) {
@@ -26,6 +28,12 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   for (int i = 32 * 7 - 1; i >= 0 && !max_bit_2; i--) {
     if (check_bit(divider, i)) max_bit_1 = 2;
   }
+  // if(max_bit_1 >= max_bit_2) {
+  // s21_sub_big(shift_big_decimal(divisible, max_bit_1 - max_bit_2, 'R'), divider,  &tmp); 
+      shift_big_decimal(tmp_res, 1, 'L');
+      set_bit(result, 0, true);
+  // } else 
+  // if(is_not_null(tmp)){}
 
   if (0) {
     res = TOO_BIG;

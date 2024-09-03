@@ -8,33 +8,36 @@ void print_32_binary(int a) {
   printf("\n");
 }
 
-void print_binary(s21_decimal a) {
-  for (int i = 0; i < 4; i++) print_32_binary(a.bits[i]);
+void print_binary(big_decimal a) {
+  for (int i = 0; i < 7; i++) print_32_binary(a.bits[i]);
 }
 
 bool check_bit(big_decimal a, int num) {
   return (a.bits[num / 32] >> (num % 32)) & 1 ? true : false;
 }
 
-void set_bit(big_decimal *a, int num, bool choice) {
+void set_bit(big_decimal *a, int num, int choice) {
   a->bits[num / 32] =
       choice ? a->bits[0] | (1 << (num % 32)) : a->bits[0] & (~1 << (num % 32));
 }
 
-bool check_sign(s21_decimal a) { return (a.bits[3] & 1) ? true : false; }
+bool check_sign(s21_decimal a) { return ((a.bits[3] >> 31) & 1) ? true : false; }
 
 void set_sign(s21_decimal *a, bool choice) {
-  a->bits[3] = choice ? a->bits[3] | 1 : a->bits[3] & ~1;
+  a->bits[3] = (choice ? (a->bits[3] >> 31) | 1 : (a->bits[3] >> 31) & ~1) << 31;
 }
 
-int get_scale(s21_decimal a) { return (a.bits[3] >> 8) & 255; }
+int get_scale(big_decimal a) { return (a.bits[7] >> 16) & 255; }
 
-void set_scale(s21_decimal *a, int num) {
-  a->bits[3] = (((a->bits[3] >> 8) & 0) | num) << 8;
+void set_scale(big_decimal *a, int num) {
+  a->bits[7] = (((a->bits[3] >> 16) & 0) | num) << 16;
 }
 
-bool is_not_null(s21_decimal a) {
-  return (a.bits[0] == a.bits[1] == a.bits[2] == 0) ? false : true;
+bool is_not_null(big_decimal a) {
+  return (a.bits[0] == a.bits[1] == a.bits[2] == a.bits[3] == a.bits[4] ==
+          a.bits[5] == a.bits[6] == 0)
+             ? false
+             : true;
 }
 
 big_decimal shift_big_decimal(big_decimal a, int value, char vector) {
@@ -43,14 +46,14 @@ big_decimal shift_big_decimal(big_decimal a, int value, char vector) {
     if (vector == 'L') {
       for (int i = 0; i < 7; i++) {
         tmp = a.bits[i];
-        a.bits[i] = a.bits[i] << (value > 31 ? 31 : value);
+        a.bits[i] <<= (value > 31 ? 31 : value);
         a.bits[i] |= memory;
         memory = tmp >> (32 - (value > 31 ? 31 : value));
       }
     } else if (vector == 'R') {
       for (int i = 6; i >= 0; i++) {
         tmp = a.bits[i];
-        a.bits[i] = a.bits[i] >> (value > 31 ? 31 : value);
+        a.bits[i] >>= (value > 31 ? 31 : value);
         a.bits[i] |= memory;
         memory = tmp << (32 - (value > 31 ? 31 : value));
       }
@@ -83,4 +86,4 @@ big_decimal big_x10(big_decimal a) {
 // void print_decimal(s21_decimal a){
 // }
 
-// Проверка на бесконечность
+// Проверка на бесконечность или переполнение
