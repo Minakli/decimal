@@ -13,4 +13,6 @@ Suite *tests_division(void);
 
 Suite *tests_functions(void);
 
+Suite *tests_mul(void);
+
 #endif
