@@ -33,7 +33,7 @@ START_TEST(test_func_insert_3) {
   s21_decimal a = {
       {0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
        0b00000000000000000000000000000000, 0b10000000000000000000000000000000}};
-  ck_assert_int_eq(check_sign(a), true);
+  ck_assert_int_eq(check_sign(a.bits[3]), true);
 }
 END_TEST
 
@@ -41,9 +41,9 @@ START_TEST(test_func_insert_4) {
   s21_decimal a = {
       {0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
        0b00000000000000000000000000000000, 0b00000000000000000000000000000000}};
-  ck_assert_int_eq(check_sign(a), false);
-  set_sign(&a, true);
-  ck_assert_int_eq(check_sign(a), true);
+  ck_assert_int_eq(check_sign(a.bits[3]), false);
+  set_sign(&a.bits[3], true);
+  ck_assert_int_eq(check_sign(a.bits[3]), true);
 }
 END_TEST
 
@@ -52,9 +52,8 @@ START_TEST(test_func_insert_5) {
       {0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
        0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
        0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
-       0b00000000000000000000000000000000, 0b00000000000011000000000000000000
-       }};
-  ck_assert_int_eq(get_scale(a), 12);
+       0b00000000000000000000000000000000, 0b00000000000011000000000000000000}};
+  ck_assert_int_eq(get_scale(a.bits[7]), 12);
 }
 END_TEST
 
@@ -64,9 +63,9 @@ START_TEST(test_func_insert_6) {
        0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
        0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
        0b00000000000000000000000000000000, 0b00000000000011000000000000000000}};
-  ck_assert_int_eq(get_scale(a), 12);
-  set_scale(&a, 25);
-  ck_assert_int_eq(get_scale(a), 25);
+  ck_assert_int_eq(get_scale(a.bits[7]), 12);
+  set_scale(&a.bits[7], 25);
+  ck_assert_int_eq(get_scale(a.bits[7]), 25);
 }
 END_TEST
 

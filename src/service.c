@@ -21,22 +21,16 @@ void set_bit(big_decimal *a, int num, int choice) {
       choice ? a->bits[0] | (1 << (num % 32)) : a->bits[0] & (~1 << (num % 32));
 }
 
-bool check_sign(s21_decimal a) { return ((a.bits[3] >> 31) & 1) ? true : false; }
+bool check_sign(int value) { return ((value >> 31) & 1) ? true : false; }
 
-// void set_sign(s21_decimal *a, bool choice) {
-//   a->bits[3] = (choice ? (a->bits[3] >> 31) | 1 : (a->bits[3] >> 31) & ~1) << 31;
-// }  
-// Этот вариант функции затирает экспоненту ^^^
-
-void set_sign(s21_decimal *value, bool sign) {
-  value->bits[3] = sign ? value->bits[3] | (sign << 31)
-                        : value->bits[3] & ~(1 << 31);
+void set_sign(int *value, bool choice) {
+  *value = (choice ? (*value >> 31) | 1 : (*value >> 31) & ~1) << 31;
 }
 
-int get_scale(big_decimal a) { return (a.bits[7] >> 16) & 255; }
+int get_scale(int value) { return (value >> 16) & 255; }
 
-void set_scale(big_decimal *a, int num) {
-  a->bits[7] = (((a->bits[3] >> 16) & 0) | num) << 16;
+void set_scale(int *value, int num) {
+  *value = (((*value >> 16) & 0) | num) << 16;
 }
 
 bool is_not_null(big_decimal a) {

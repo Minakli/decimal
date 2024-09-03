@@ -64,13 +64,13 @@ void set_bit(big_decimal *a, int num, int choice);
 // Печать децимел в десятичном виде (УБРАТЬ!)
 void print_decimal(s21_decimal a);
 // Проверить знак
-bool check_sign(s21_decimal a);
+bool check_sign(int value);
 // Установить знак
-void set_sign(s21_decimal *a, bool choice);
+void set_sign(int *value, bool choice);
 // Получить разряд
-int get_scale(big_decimal a);
+int get_scale(int value);
 // Установить разряд
-void set_scale(big_decimal *a, int num);
+void set_scale(int *value, int num);
 // Проверка на ноль
 bool is_not_null(big_decimal a);
 // Сдвиг по количеству и направлению (L or R)
@@ -79,4 +79,9 @@ big_decimal shift_big_decimal(big_decimal a, int value, char vector);
 big_decimal to_big(s21_decimal a);
 // Перевод из биг в децимел
 s21_decimal from_big(big_decimal a);
+
+// Сложить два положительных числа одного порядка
+big_decimal big_plus_big(big_decimal value_1, big_decimal value_2);
+// Вычесть одно из второго, положительные одного порядка
+big_decimal big_minus_big(big_decimal value_1, big_decimal value_2);
 #endif  //  SRC_S21_DECIMAL_H_
