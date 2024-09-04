@@ -23,6 +23,7 @@ big_decimal big_minus_big(big_decimal value_1, big_decimal value_2) {
     debt = sum < 0 ? 1 : 0;
     set_bit(&result, i, sum % 2);
   }
+  return result;
 }
 void normalization(big_decimal value_1, big_decimal value_2) {
   // Определить, где больше порядок

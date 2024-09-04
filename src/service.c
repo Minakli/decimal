@@ -24,13 +24,13 @@ void set_bit(big_decimal *a, int num, int choice) {
 bool check_sign(int value) { return ((value >> 31) & 1) ? true : false; }
 
 void set_sign(int *value, bool choice) {
-  *value = (choice ? (*value >> 31) | 1 : (*value >> 31) & ~1) << 31;
+  *value = choice ? *value | (choice << 31) : *value & ~(1 << 31);
 }
 
 int get_scale(int value) { return (value >> 16) & 255; }
 
 void set_scale(int *value, int num) {
-  *value = (((*value >> 16) & 0) | num) << 16;
+  *value = (((*value >> 16) & 0b1000000000000000) | num) << 16;
 }
 
 bool is_not_null(big_decimal a) {
