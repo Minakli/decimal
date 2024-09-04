@@ -8,7 +8,10 @@ big_decimal big_plus_big(big_decimal value_1, big_decimal value_2) {
     sum = check_bit(value_1, i) + check_bit(value_2, i) + memory;
     memory = sum > 1 ? 1 : 0;
     set_bit(&result, i, sum % 2);
+    // printf("%d +++\n", sum % 2);
+    // printf("%d +++\n", result.bits[0]);
   }
+  printf("%d +++\n", result.bits[0]);
   return result;
 }
 big_decimal big_minus_big(big_decimal value_1, big_decimal value_2) {
