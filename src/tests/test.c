@@ -5,7 +5,7 @@ int main(void) {
   int success = 0;
   Suite *string_test[] = {tests_converters(), tests_division(),
                           tests_functions(),
-                          // tests_mul(),
+                          tests_mul(),
                           tests_add()};
 
   for (int i = 0; i < sizeof(string_test) / sizeof(string_test[0]); i++) {
