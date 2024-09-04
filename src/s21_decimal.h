@@ -79,9 +79,10 @@ big_decimal shift_big_decimal(big_decimal a, int value, char vector);
 big_decimal to_big(s21_decimal a);
 // Перевод из биг в децимел
 s21_decimal from_big(big_decimal a);
-
 // Сложить два положительных числа одного порядка
 big_decimal big_plus_big(big_decimal value_1, big_decimal value_2);
 // Вычесть одно из второго, положительные одного порядка
 big_decimal big_minus_big(big_decimal value_1, big_decimal value_2);
+// Умножение на 10
+big_decimal big_x10(big_decimal value);
 #endif  //  SRC_S21_DECIMAL_H_

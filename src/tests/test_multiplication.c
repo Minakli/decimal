@@ -1,10 +1,8 @@
 #include "test.h"
 
 START_TEST(simple_mul) {
-  s21_decimal value_1 = {
-      {2, 0, 0, 0}};
-  s21_decimal value_2 = {
-      {3, 0, 0, 0}};
+  s21_decimal value_1 = {{2, 0, 0, 0}};
+  s21_decimal value_2 = {{3, 0, 0, 0}};
   s21_decimal result = {{0}};
   int error = s21_mul(value_1, value_2, &result);
   s21_decimal expected = {{6, 0, 0, 0}};
@@ -12,15 +10,12 @@ START_TEST(simple_mul) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
   }
   ck_assert_int_eq(error, 0);
-
 }
 END_TEST
 
 START_TEST(simple_mul_negative) {
-  s21_decimal value_1 = {
-      {14, 0, 0, 1 << 31}};
-  s21_decimal value_2 = {
-      {22, 0, 0, 0}};
+  s21_decimal value_1 = {{14, 0, 0, 1 << 31}};
+  s21_decimal value_2 = {{22, 0, 0, 0}};
   s21_decimal result = {{0}};
   int error = s21_mul(value_1, value_2, &result);
   s21_decimal expected = {{308, 0, 0, 1 << 31}};
@@ -28,7 +23,6 @@ START_TEST(simple_mul_negative) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
   }
   ck_assert_int_eq(error, 0);
-
 }
 END_TEST
 
@@ -42,7 +36,6 @@ START_TEST(mul_negative) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
   }
   ck_assert_int_eq(error, 0);
-
 }
 END_TEST
 
@@ -56,7 +49,6 @@ START_TEST(mul_negative_2) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
   }
   ck_assert_int_eq(error, 0);
-
 }
 
 END_TEST
@@ -70,7 +62,6 @@ START_TEST(mul_negative_overword) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
   }
   ck_assert_int_eq(error, 0);
-
 }
 END_TEST
 
@@ -138,7 +129,7 @@ Suite *tests_mul(void) {
   tcase_add_test(tc_core, mul_negative_overword);
   tcase_add_test(tc_core, mul_overflow);
   tcase_add_test(tc_core, mul_with_scale);
-//   tcase_add_test(tc_core, mul_bank_round);
+  //   tcase_add_test(tc_core, mul_bank_round);
 
   suite_add_tcase(s, tc_core);
   return s;

@@ -1,10 +1,11 @@
-#include "s21_decimal.h"
 #include <limits.h>
+
+#include "s21_decimal.h"
 
 // bool is_negative(s21_decimal value) { return value.bits[3] >> 31; }
 
 // int get_exponent(s21_decimal value) { return ((value.bits[3] >> 16) & 255); }
-// 
+//
 // void set_exponent(s21_decimal *value, int exponent) {
 //   value->bits[3] &= (1 << 31);
 //   value->bits[3] |= ((exponent & 255) << 16);

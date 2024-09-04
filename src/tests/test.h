@@ -15,6 +15,6 @@ Suite *tests_functions(void);
 
 Suite *tests_mul(void);
 
-Suite *tests_add(void);
+// Suite *tests_add(void);
 
 #endif

@@ -68,6 +68,24 @@ START_TEST(test_func_insert_8) {
 }
 END_TEST
 
+START_TEST(test_func_insert_9) {
+  big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_3 = {{0, 0, 0, 0, 0, 0, 0, 0}};
+  value_3 = big_plus_big(value_1, value_2);
+  ck_assert_int_eq(value_3.bits[0], 333);
+}
+END_TEST
+
+START_TEST(test_func_insert_10) {
+  big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_3 = {{0, 0, 0, 0, 0, 0, 0, 0}};
+  value_3 = big_minus_big(value_1, value_2);
+  ck_assert_int_eq(value_3.bits[0], 111);
+}
+END_TEST
+
 Suite *tests_functions(void) {
   Suite *s = suite_create("Functions");
   TCase *tc_core = tcase_create("Core");
@@ -80,6 +98,8 @@ Suite *tests_functions(void) {
   tcase_add_test(tc_core, test_func_insert_6);
   tcase_add_test(tc_core, test_func_insert_7);
   tcase_add_test(tc_core, test_func_insert_8);
+  tcase_add_test(tc_core, test_func_insert_9);
+  tcase_add_test(tc_core, test_func_insert_10);
 
   suite_add_tcase(s, tc_core);
   return s;
