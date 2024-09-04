@@ -18,7 +18,7 @@ bool check_bit(big_decimal a, int num) {
 
 void set_bit(big_decimal *a, int num, int choice) {
   a->bits[num / 32] = choice ? a->bits[num / 32] | (1 << (num % 32))
-                             : a->bits[num / 32] & (~1 << (num % 32));
+                             : a->bits[num / 32] & ~(1 << (num % 32));
 }
 
 bool check_sign(int value) { return ((value >> 31) & 1) ? true : false; }

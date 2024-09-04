@@ -11,7 +11,7 @@ START_TEST(test_add_insert_1) {
   ck_assert_int_eq(value_1.bits[0], 2);
   ck_assert_int_eq(value_2.bits[0], 1);
   // printf("%d --\n", value_3.bits[0]);
-  // ck_assert_int_eq(value_3.bits[0], 3);
+  ck_assert_int_eq(value_3.bits[0], 3);
 }
 END_TEST
 
