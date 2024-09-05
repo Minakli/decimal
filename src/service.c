@@ -9,7 +9,7 @@ void print_32_binary(int a) {
 }
 
 void print_binary(big_decimal a) {
-  for (int i = 0; i < 7; i++) print_32_binary(a.bits[i]);
+  for (int i = 0; i < 8; i++) print_32_binary(a.bits[i]);
 }
 
 bool check_bit(big_decimal a, int num) {
@@ -21,15 +21,15 @@ void set_bit(big_decimal *a, int num, int choice) {
                              : a->bits[num / 32] & ~(1 << (num % 32));
 }
 
-bool check_sign(int value) { return ((value >> 31) & 1) ? true : false; }
+bool check_sign(unsigned value) { return ((value >> 31) & 1) ? true : false; }
 
-void set_sign(int *value, bool choice) {
+void set_sign(unsigned *value, bool choice) {
   *value = choice ? *value | (choice << 31) : *value & ~(1 << 31);
 }
 
-int get_scale(int value) { return (value >> 16) & 255; }
+int get_scale(unsigned value) { return (value >> 16) & 255; }
 
-void set_scale(int *value, int num) {
+void set_scale(unsigned *value, int num) {
   *value = (((*value >> 16) & 0b1000000000000000) | num) << 16;
 }
 
@@ -39,7 +39,7 @@ bool is_not_null(big_decimal a) {
              ? false
              : true;
 }
-
+// Подозрительно работает, не затирал бы скейл
 big_decimal shift_big_decimal(big_decimal a, int value, char vector) {
   unsigned memory = 0, tmp = 0;
   while (value > 0) {
@@ -77,7 +77,7 @@ s21_decimal from_big(big_decimal a) {
   b.bits[3] = a.bits[7];
   return b;
 }
-// Сложить два числа одного порядка без учета знака
+
 big_decimal big_plus_big(big_decimal value_1, big_decimal value_2) {
   big_decimal result = {{0, 0, 0, 0, 0, 0, 0, 0}};
   int memory = 0, sum = 0;
@@ -86,10 +86,9 @@ big_decimal big_plus_big(big_decimal value_1, big_decimal value_2) {
     memory = sum > 1 ? 1 : 0;
     set_bit(&result, i, sum % 2);
   }
-  printf("%d +++\n", result.bits[0]);
   return result;
 }
-// Вычесть одно из второго, один порядок, без учета знака
+
 big_decimal big_minus_big(big_decimal value_1, big_decimal value_2) {
   big_decimal result = {{0, 0, 0, 0, 0, 0, 0, 0}};
   int debt = 0, sum = 0;
@@ -101,21 +100,21 @@ big_decimal big_minus_big(big_decimal value_1, big_decimal value_2) {
   return result;
 }
 
-// Умножение на 10
 big_decimal big_x10(big_decimal value) {
-  return big_plus_big(shift_big_decimal(value, 3, "L"),
-                      shift_big_decimal(value, 1, "L"));
+  return big_plus_big(shift_big_decimal(value, 3, 'L'),
+                      shift_big_decimal(value, 1, 'L'));
 }
+
 // Приведение к одинаковому порядку
 void normalization(big_decimal *value_1, big_decimal *value_2) {
   int delta = get_scale(value_1->bits[7]) - get_scale(value_2->bits[7]);
   if (delta > 0) {
-    set_scale(value_2->bits[7], get_scale(value_1->bits[7]));
     while (delta-- > 0) *value_2 = big_x10(*value_2);
+    set_scale(&(value_2->bits[7]), get_scale((value_1->bits[7])));
   }
   if (delta < 0) {
-    set_scale(value_1->bits[7], get_scale(value_2->bits[7]));
     while (delta++ < 0) *value_1 = big_x10(*value_1);
+    set_scale(&(value_1->bits[7]), get_scale((value_2->bits[7])));
   }
 }
 
@@ -123,3 +122,80 @@ void normalization(big_decimal *value_1, big_decimal *value_2) {
 // }
 
 // Проверка на бесконечность или переполнение
+
+#include "s21_decimal.h"
+
+// Меньше
+int big_is_less(big_decimal value_1, big_decimal value_2) {
+  big_decimal tmp_1 = value_1;
+  big_decimal tmp_2 = value_2;
+  int result = -1;
+  normalization(&tmp_1, &tmp_2);
+  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+    result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
+             : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
+                                                         : -1;
+  }
+  return (result == 1) ? 1 : 0;
+}
+// Меньше или равно
+int big_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
+  big_decimal tmp_1 = value_1;
+  big_decimal tmp_2 = value_2;
+  int result = -1;
+  normalization(&tmp_1, &tmp_2);
+  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+    result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
+             : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
+                                                         : -1;
+  }
+  return (result != 0) ? 1 : 0;
+}
+// Больше
+int big_is_greater(big_decimal value_1, big_decimal value_2) {
+  big_decimal tmp_1 = value_1;
+  big_decimal tmp_2 = value_2;
+  int result = -1;
+  normalization(&tmp_1, &tmp_2);
+  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+    result = check_bit(tmp_1, i) > check_bit(tmp_2, i)   ? 1
+             : check_bit(tmp_1, i) < check_bit(tmp_2, i) ? 0
+                                                         : -1;
+  }
+  return (result == 1) ? 1 : 0;
+}
+// Больше или равно
+int big_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
+  big_decimal tmp_1 = value_1;
+  big_decimal tmp_2 = value_2;
+  int result = -1;
+  normalization(&tmp_1, &tmp_2);
+  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+    result = check_bit(tmp_1, i) > check_bit(tmp_2, i)   ? 1
+             : check_bit(tmp_1, i) < check_bit(tmp_2, i) ? 0
+                                                         : -1;
+  }
+  return (result != 0) ? 1 : 0;
+}
+// Равно
+int big_is_equal(big_decimal value_1, big_decimal value_2) {
+  big_decimal tmp_1 = value_1;
+  big_decimal tmp_2 = value_2;
+  int result = 1;
+  normalization(&tmp_1, &tmp_2);
+  for (int i = 32 * 7; i > 0 && result; i--) {
+    if (check_bit(tmp_1, i) != check_bit(tmp_2, i)) result = 0;
+  }
+  return result;
+}
+// Не равно
+int big_is_not_equal(big_decimal value_1, big_decimal value_2) {
+  big_decimal tmp_1 = value_1;
+  big_decimal tmp_2 = value_2;
+  int result = 0;
+  normalization(&tmp_1, &tmp_2);
+  for (int i = 32 * 7; i > 0 && result > -1; i--) {
+    if (check_bit(tmp_1, i) < check_bit(tmp_2, i)) result = 1;
+  }
+  return (result == 1) ? 1 : 0;
+}

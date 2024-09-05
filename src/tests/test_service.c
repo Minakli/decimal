@@ -86,6 +86,68 @@ START_TEST(test_func_insert_10) {
 }
 END_TEST
 
+START_TEST(test_func_insert_11) {
+  big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
+  set_scale(&value_1.bits[7], 4);
+  normalization(&value_1, &value_2);
+  ck_assert_int_eq(get_scale(value_2.bits[7]), 4);
+  ck_assert_int_eq(value_2.bits[0], 1110000);
+}
+END_TEST
+
+START_TEST(test_func_insert_12) {
+  big_decimal value_1 = {{0, 0, 0, 222, 0, 0, 0, 0}};
+  big_decimal value_2 = {{0, 0, 0, 111, 0, 0, 0, 0}};
+  ck_assert_int_eq(big_is_less(value_2, value_1), 1);
+  ck_assert_int_eq(big_is_less(value_1, value_1), 0);
+}
+END_TEST
+
+START_TEST(test_func_insert_13) {
+  big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
+  ck_assert_int_eq(big_is_less_or_equal(value_2, value_1), 1);
+  ck_assert_int_eq(big_is_less_or_equal(value_1, value_1), 1);
+  ck_assert_int_eq(big_is_less_or_equal(value_1, value_2), 0);
+}
+END_TEST
+
+START_TEST(test_func_insert_14) {
+  big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
+  ck_assert_int_eq(big_is_greater(value_1, value_2), 1);
+  ck_assert_int_eq(big_is_greater(value_1, value_1), 0);
+}
+END_TEST
+
+START_TEST(test_func_insert_15) {
+  big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
+  ck_assert_int_eq(big_is_greater_or_equal(value_1, value_2), 1);
+  ck_assert_int_eq(big_is_greater_or_equal(value_1, value_1), 1);
+  ck_assert_int_eq(big_is_greater_or_equal(value_2, value_1), 0);
+}
+END_TEST
+
+START_TEST(test_func_insert_16) {
+  big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
+  ck_assert_int_eq(big_is_equal(value_1, value_2), 0);
+  ck_assert_int_eq(big_is_equal(value_1, value_1), 1);
+  ck_assert_int_eq(big_is_equal(value_2, value_1), 0);
+}
+END_TEST
+
+START_TEST(test_func_insert_17) {
+  big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
+  ck_assert_int_eq(big_is_not_equal(value_1, value_2), 1);
+  ck_assert_int_eq(big_is_not_equal(value_1, value_1), 0);
+  ck_assert_int_eq(big_is_not_equal(value_2, value_1), 1);
+}
+END_TEST
+
 Suite *tests_functions(void) {
   Suite *s = suite_create("Functions");
   TCase *tc_core = tcase_create("Core");
@@ -100,6 +162,13 @@ Suite *tests_functions(void) {
   tcase_add_test(tc_core, test_func_insert_8);
   tcase_add_test(tc_core, test_func_insert_9);
   tcase_add_test(tc_core, test_func_insert_10);
+  tcase_add_test(tc_core, test_func_insert_11);
+  tcase_add_test(tc_core, test_func_insert_12);
+  tcase_add_test(tc_core, test_func_insert_13);
+  tcase_add_test(tc_core, test_func_insert_14);
+  tcase_add_test(tc_core, test_func_insert_15);
+  tcase_add_test(tc_core, test_func_insert_16);
+  tcase_add_test(tc_core, test_func_insert_17);
 
   suite_add_tcase(s, tc_core);
   return s;

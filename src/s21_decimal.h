@@ -64,13 +64,13 @@ void set_bit(big_decimal *a, int num, int choice);
 // Печать децимел в десятичном виде (УБРАТЬ!)
 void print_decimal(s21_decimal a);
 // Проверить знак
-bool check_sign(int value);
+bool check_sign(unsigned value);
 // Установить знак
-void set_sign(int *value, bool choice);
+void set_sign(unsigned *value, bool choice);
 // Получить разряд
-int get_scale(int value);
+int get_scale(unsigned value);
 // Установить разряд
-void set_scale(int *value, int num);
+void set_scale(unsigned *value, int num);
 // Проверка на ноль
 bool is_not_null(big_decimal a);
 // Сдвиг по количеству и направлению (L or R)
@@ -85,4 +85,18 @@ big_decimal big_plus_big(big_decimal value_1, big_decimal value_2);
 big_decimal big_minus_big(big_decimal value_1, big_decimal value_2);
 // Умножение на 10
 big_decimal big_x10(big_decimal value);
+// Приведение к одному порядку
+void normalization(big_decimal *value_1, big_decimal *value_2);
+// Меньше
+int big_is_less(big_decimal value_1, big_decimal value_2);
+// Меньше или равно
+int big_is_less_or_equal(big_decimal value_1, big_decimal value_2);
+// Больше
+int big_is_greater(big_decimal value_1, big_decimal value_2);
+// Больше или равно
+int big_is_greater_or_equal(big_decimal value_1, big_decimal value_2);
+// Равно
+int big_is_equal(big_decimal value_1, big_decimal value_2);
+// Не равно
+int big_is_not_equal(big_decimal value_1, big_decimal value_2);
 #endif  //  SRC_S21_DECIMAL_H_
