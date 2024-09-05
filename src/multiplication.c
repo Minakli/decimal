@@ -60,8 +60,8 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     result->bits[i] = temp_result.bits[i];
   }
 
-  set_sign(&result->bits[3], result_sign);
-  set_scale(&result->bits[3], result_exponent);
+  set_sign((int *)&result->bits[3], result_sign);
+  set_scale((int *)&result->bits[3], result_exponent);
 
   return error_status;
 }
