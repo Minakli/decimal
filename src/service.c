@@ -30,7 +30,8 @@ void set_sign(unsigned *value, bool choice) {
 int get_scale(unsigned value) { return (value >> 16) & 255; }
 
 void set_scale(unsigned *value, int num) {
-  *value = (((*value >> 16) & 0b1000000000000000) | num) << 16;
+  *value = (*value & (1 << 31)) | num << 16;
+  // *value = (((*value >> 16) & 0b1000000000000000) | num) << 16;
 }
 
 bool is_not_null(big_decimal a) {

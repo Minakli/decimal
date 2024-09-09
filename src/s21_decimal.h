@@ -73,6 +73,7 @@ int get_scale(unsigned value);
 void set_scale(unsigned *value, int num);
 // Проверка на ноль
 bool is_not_null(big_decimal a);
+
 // Сдвиг по количеству и направлению (L or R)
 big_decimal shift_big_decimal(big_decimal a, int value, char vector);
 // Перевод в биг децимел
@@ -87,6 +88,7 @@ big_decimal big_minus_big(big_decimal value_1, big_decimal value_2);
 big_decimal big_x10(big_decimal value);
 // Приведение к одному порядку
 void normalization(big_decimal *value_1, big_decimal *value_2);
+
 // Меньше
 int big_is_less(big_decimal value_1, big_decimal value_2);
 // Меньше или равно
