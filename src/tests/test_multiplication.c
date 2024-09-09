@@ -52,6 +52,7 @@ START_TEST(mul_negative_2) {
 }
 
 END_TEST
+
 START_TEST(mul_negative_overword) {
   s21_decimal value_1 = {{1073741824, 0, 0, 1 << 31}};
   s21_decimal value_2 = {{8, 0, 0, 0}};
@@ -107,6 +108,68 @@ START_TEST(mul_with_scale) {
 }
 END_TEST
 
+START_TEST(mul_big) {
+  s21_decimal value_1 = {
+      {0b00101010010100101001001010100101, 0b1001010100101, 0, 0}};
+  s21_decimal value_2 = {{0b1001010100101001010100101001010, 0, 0, 0}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  s21_decimal expected = {{0b00111000000100010101000010110010,
+                           0b10010010000011001100001011001111, 0b10101101110,
+                           0}};
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(mul_big_2) {
+  s21_decimal value_1 = {
+      {0b11101010110100101001001010100101, 0b1111111011101, 0, 3 << 16}};
+  s21_decimal value_2 = {{0b1111111111110111001011010111010, 0, 0, 6 << 16}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  s21_decimal expected = {{0b10100001101100100011100111100010,
+                           0b01101000110101101110001000001001, 0b111111101110,
+                           9 << 16}};
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(mul_big_3) {
+  s21_decimal value_1 = {{0b11111111111111111111111111111111,
+                          0b11111111111111111111111111111111,
+                          0b11111111111111111111111111111111, 0}};
+  s21_decimal value_2 = {{1000000001, 0, 0, 9 << 16}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  // s21_decimal expected = {{0b10100001101100100011100111100010,
+  // 0b01101000110101101110001000001001, 0b111111101110, 9 << 16}}; for (int i =
+  // 0; i < 4; i++) {
+  //   ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  // }
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
+START_TEST(mul_small) {
+  s21_decimal value_1 = {{0b101010100001010101101010110100, 0, 0, 21 << 16}};
+  s21_decimal value_2 = {{0b110101010101001001001010100101, 0, 0, 7 << 16}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  s21_decimal expected = {{0b01111100101111100001111000000100,
+                           0b1000110110111010011111100100, 0, 28 << 16}};
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
 // банковское округление не работает:
 // START_TEST(mul_bank_round) {
 //   s21_decimal decimal1 = {{-1, 0, 0, 0x1C0001}};
@@ -129,6 +192,10 @@ Suite *tests_mul(void) {
   tcase_add_test(tc_core, mul_negative_overword);
   tcase_add_test(tc_core, mul_overflow);
   tcase_add_test(tc_core, mul_with_scale);
+  tcase_add_test(tc_core, mul_big);
+  tcase_add_test(tc_core, mul_big_2);
+  tcase_add_test(tc_core, mul_big_3);
+  tcase_add_test(tc_core, mul_small);
   //   tcase_add_test(tc_core, mul_bank_round);
 
   suite_add_tcase(s, tc_core);

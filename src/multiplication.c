@@ -2,17 +2,8 @@
 
 #include "s21_decimal.h"
 
-// bool is_negative(s21_decimal value) { return value.bits[3] >> 31; }
-
-// int get_exponent(s21_decimal value) { return ((value.bits[3] >> 16) & 255); }
-//
-// void set_exponent(s21_decimal *value, int exponent) {
-//   value->bits[3] &= (1 << 31);
-//   value->bits[3] |= ((exponent & 255) << 16);
-// }
-
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  short error_status = 0;
+  int error_status = 0;
 
   bool result_sign = check_sign(value_1.bits[3]) ^ check_sign(value_2.bits[3]);
   int result_exponent = get_scale(value_1.bits[3]) + get_scale(value_2.bits[3]);
@@ -23,8 +14,8 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   if (!result)
     error_status = -1;
   else {
-    for (short i = 0; i < 3; ++i) {
-      for (short j = 0; j < 3; ++j) {
+    for (int i = 0; i < 3; ++i) {
+      for (int j = 0; j < 3; ++j) {
         unsigned long long temp =
             (unsigned long long)value_1.bits[i] * value_2.bits[j] +
             overflow_word + temp_result.bits[i + j];
@@ -56,12 +47,12 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     error_status = 2;
   }
 
-  for (short i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result->bits[i] = temp_result.bits[i];
   }
 
-  set_sign((int *)&result->bits[3], result_sign);
-  set_scale((int *)&result->bits[3], result_exponent);
+  set_sign(&result->bits[3], result_sign);
+  set_scale(&result->bits[3], result_exponent);
 
   return error_status;
 }
