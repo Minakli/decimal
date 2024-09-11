@@ -52,7 +52,7 @@ big_decimal shift_big_decimal(big_decimal a, int value, char vector) {
         memory = tmp >> (32 - (value > 31 ? 31 : value));
       }
     } else if (vector == 'R') {
-      for (int i = 6; i >= 0; i++) {
+      for (int i = 6; i >= 0; i--) {
         tmp = a.bits[i];
         a.bits[i] >>= (value > 31 ? 31 : value);
         a.bits[i] |= memory;
@@ -87,6 +87,7 @@ big_decimal big_plus_big(big_decimal value_1, big_decimal value_2) {
     memory = sum > 1 ? 1 : 0;
     set_bit(&result, i, sum % 2);
   }
+  result.bits[7] = value_1.bits[7];
   return result;
 }
 
@@ -98,6 +99,7 @@ big_decimal big_minus_big(big_decimal value_1, big_decimal value_2) {
     debt = sum < 0 ? 1 : 0;
     set_bit(&result, i, sum % 2);
   }
+  result.bits[7] = value_1.bits[7];
   return result;
 }
 
