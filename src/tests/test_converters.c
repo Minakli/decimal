@@ -1,4 +1,4 @@
-#include <limits.h>
+#include <math.h>
 
 #include "test.h"
 
@@ -22,10 +22,70 @@ START_TEST(dec_to_int_simple_negative) {
 }
 END_TEST
 
+START_TEST(dec_to_int_error_negative) {
+  s21_decimal value = {{2147483649, 0, 0, 1 << 31}};
+  int result = 0;
+  int error = s21_from_decimal_to_int(value, &result);
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
+START_TEST(dec_to_int_error_positive) {
+  s21_decimal value = {{2147483648, 0, 0, 0}};
+  int result = 0;
+  int error = s21_from_decimal_to_int(value, &result);
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
 START_TEST(dec_to_int) {
   s21_decimal value = {{INT_MAX, 0, 0, 0}};
   int result = 0;
   int expected = INT_MAX;
+  int error = s21_from_decimal_to_int(value, &result);
+  ck_assert_int_eq(result, expected);
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(dec_to_int_scale_1_pos) {
+  s21_decimal value = {{0b11111111111111111111111111110110, 0b100, 0, 1 << 16}};
+  int result = 0;
+  int expected = INT_MAX;
+  int error = s21_from_decimal_to_int(value, &result);
+  ck_assert_int_eq(result, expected);
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(dec_to_int_scale_18_pos) {
+  s21_decimal value = {{0b01011000100111000000000000000000,
+                        0b11000101110100010100100101001100,
+                        0b110111100000101101101011001, 18 << 16}};
+  int result = 0;
+  int expected = INT_MAX;
+  int error = s21_from_decimal_to_int(value, &result);
+  ck_assert_int_eq(result, expected);
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(dec_to_int_scale_1_neg) {
+  s21_decimal value = {{0, 5, 0, (1 << 31) | (1 << 16)}};
+  int result = 0;
+  int expected = INT_MIN;
+  int error = s21_from_decimal_to_int(value, &result);
+  ck_assert_int_eq(result, expected);
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(dec_to_int_scale_18_neg) {
+  s21_decimal value = {{0b00000000000000000000000000000000,
+                        0b11010011101100100000000000000000,
+                        0b110111100000101101101011001, (18 << 16) | (1 << 31)}};
+  int result = 0;
+  int expected = INT_MIN;
   int error = s21_from_decimal_to_int(value, &result);
   ck_assert_int_eq(result, expected);
   ck_assert_int_eq(error, 0);
@@ -125,7 +185,6 @@ START_TEST(int_to_dec_simple) {
   int value = 11;
   s21_decimal result = {{0}};
   s21_decimal expected = {{11, 0, 0, 0}};
-  ;
   int error = s21_from_int_to_decimal(value, &result);
   for (int i = 0; i < 4; i++) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
@@ -138,7 +197,6 @@ START_TEST(int_to_dec_max) {
   int value = INT_MAX;
   s21_decimal result = {{0}};
   s21_decimal expected = {{INT_MAX, 0, 0, 0}};
-  ;
   int error = s21_from_int_to_decimal(value, &result);
   for (int i = 0; i < 4; i++) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
@@ -499,6 +557,54 @@ START_TEST(s21_dti_scale) {
 }
 END_TEST
 
+START_TEST(float_nan) {
+  float value = NAN;
+  s21_decimal result = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
+  int error = s21_from_float_to_decimal(value, &result);
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
+START_TEST(float_minus_nan) {
+  float value = -NAN;
+  s21_decimal result = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
+  int error = s21_from_float_to_decimal(value, &result);
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
+START_TEST(float_inf) {
+  float value = INFINITY;
+  s21_decimal result = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
+  int error = s21_from_float_to_decimal(value, &result);
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
+START_TEST(float_minus_inf) {
+  float value = -INFINITY;
+  s21_decimal result = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
+  int error = s21_from_float_to_decimal(value, &result);
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
 END_TEST
 Suite *tests_converters(void) {
   Suite *s = suite_create("converters");
@@ -506,7 +612,13 @@ Suite *tests_converters(void) {
 
   tcase_add_test(tc_core, dec_to_int_simple);
   tcase_add_test(tc_core, dec_to_int_simple_negative);
+  tcase_add_test(tc_core, dec_to_int_error_negative);
+  tcase_add_test(tc_core, dec_to_int_error_positive);
   tcase_add_test(tc_core, dec_to_int);
+  tcase_add_test(tc_core, dec_to_int_scale_1_pos);
+  tcase_add_test(tc_core, dec_to_int_scale_18_pos);
+  tcase_add_test(tc_core, dec_to_int_scale_1_neg);
+  tcase_add_test(tc_core, dec_to_int_scale_18_neg);
   tcase_add_test(tc_core, dec_to_int_scale);
   tcase_add_test(tc_core, dec_to_int_overflow_error);
   tcase_add_test(tc_core, dec_to_int_overflow_error_2);
@@ -537,6 +649,10 @@ Suite *tests_converters(void) {
   tcase_add_test(tc_core, s21_itd_simple);
   tcase_add_test(tc_core, s21_dti_simple);
   tcase_add_test(tc_core, s21_dti_overflow);
+  tcase_add_test(tc_core, float_inf);
+  tcase_add_test(tc_core, float_minus_inf);
+  tcase_add_test(tc_core, float_nan);
+  tcase_add_test(tc_core, float_minus_nan);
 
   suite_add_tcase(s, tc_core);
   return s;

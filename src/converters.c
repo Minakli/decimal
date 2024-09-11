@@ -1,5 +1,5 @@
 #include <limits.h>
-#include <math.h>  //надо вынести в хедер
+// #include <math.h>  //надо вынести в хедер
 #include <string.h>
 
 #include "s21_decimal.h"
@@ -7,6 +7,10 @@
 s21_decimal increase_scale_to_zero(s21_decimal src, int *source_scale);
 
 s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale);
+
+int is_nan(float src);
+
+int is_inf(float src);
 
 int s21_from_int_to_decimal(int src, s21_decimal *dst) {
   bool error_status = false;
@@ -28,32 +32,29 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
 
 int s21_from_decimal_to_int(s21_decimal src, int *dst) {
   bool error_status = false;
+  bool source_sign = check_sign(src.bits[3]);
   unsigned int exponent = get_scale(src.bits[3]);
   if (exponent > 28) error_status = true;
 
-  if (!dst)
-    error_status = true;
-  else {
-    for (int i = exponent; i > 0; --i) {
-      unsigned long long int temp = src.bits[2] % 10;
-      src.bits[2] /= 10;
+  for (int i = exponent; i > 0; --i) {
+    unsigned long long int temp = src.bits[2] % 10;
+    src.bits[2] /= 10;
 
-      temp = (temp << 32) | src.bits[1];
-      src.bits[1] = temp / 10;
+    temp = (temp << 32) | src.bits[1];
+    src.bits[1] = temp / 10;
 
-      temp = ((temp % 10) << 32) | src.bits[0];
-      src.bits[0] = temp / 10;
-    }
-
-    // is overflow
-    if (src.bits[2] != 0 || src.bits[1] != 0 ||
-        src.bits[0] > (INT_MAX + check_sign(src.bits[3]))) {
-      error_status = true;
-      *dst = 0;
-    }
-
-    *dst = check_sign(src.bits[3]) ? -src.bits[0] : src.bits[0];
+    temp = ((temp % 10) << 32) | src.bits[0];
+    src.bits[0] = temp / 10;
   }
+
+  // is overflow
+  if (src.bits[2] != 0 || src.bits[1] != 0 ||
+      src.bits[0] > (INT_MAX + source_sign)) {
+    error_status = true;
+    *dst = 0;
+  }
+
+  *dst = source_sign ? -src.bits[0] : src.bits[0];
 
   return error_status;
 }
@@ -63,7 +64,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
   bool scale_sign = false;
   int source_scale = 0;
   char string_source[16] = {0};
-  if (isinf(src) || isnan(src)) {
+  if (is_inf(src) || is_nan(src)) {
     error_status = true;
   }
   if (!error_status) {
@@ -140,4 +141,24 @@ s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale) {
   }
   return src;
   // return increase_scale_to_zero(src, source_scale);
+}
+
+int is_nan(float src) {
+  union {
+    float source;
+    unsigned int bits;
+  } temp;
+  temp.source = src;
+  return ((temp.bits & 0x7F800000) == 0x7F800000) &&
+         (temp.bits & 0x007FFFFF) != 0;
+}
+
+int is_inf(float src) {
+  union {
+    float source;
+    unsigned int bits;
+  } temp;
+  temp.source = src;
+  return ((temp.bits & 0x7F800000) == 0x7F800000) &&
+         (temp.bits & 0x007FFFFF) == 0;
 }

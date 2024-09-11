@@ -10,30 +10,29 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   big_decimal temp_result = {{0}};
   unsigned long long overflow_word = 0;
-
-  if (!result)
-    error_status = -1;
-  else {
-    for (int i = 0; i < 3; ++i) {
-      for (int j = 0; j < 3; ++j) {
-        unsigned long long temp =
-            (unsigned long long)value_1.bits[i] * value_2.bits[j] +
-            overflow_word + temp_result.bits[i + j];
-        temp_result.bits[i + j] = temp & UINT_MAX;
-        overflow_word = temp >> 32;
-      }
-      temp_result.bits[i + 3] += overflow_word;
-      overflow_word = 0;
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      unsigned long long temp =
+          (unsigned long long)value_1.bits[i] * value_2.bits[j] +
+          overflow_word + temp_result.bits[i + j];
+      temp_result.bits[i + j] = temp & UINT_MAX;
+      overflow_word = temp >> 32;
     }
+    temp_result.bits[i + 3] += overflow_word;
+    overflow_word = 0;
   }
 
+  // int remainder = 0;
   while (result_exponent > 28 || (temp_result.bits[3] && result_exponent)) {
     unsigned long long temp = 0;
+    // remainder = temp_result.bits[0] % 10;
     for (int i = 5; i >= 0; --i) {
       temp = (temp << 32) | temp_result.bits[i];
       temp_result.bits[i] = temp / 10;
       temp = temp % 10;
     }
+    // if ((temp_result.bits[0] & 1) && (remainder == 5))
+    // temp_result.bits[0]++;  //банковское округление
     result_exponent--;
   }
 
