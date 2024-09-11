@@ -1,0 +1,11 @@
+{
+    "tasks": [
+        {
+            "label": "run make",
+            "type": "shell",
+            "command": "cd src && make debug",
+            "group": "build"
+        }
+    ],
+    "version": "2.0.0"
+}

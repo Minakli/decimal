@@ -84,10 +84,15 @@ s21_decimal from_big(big_decimal a);
 big_decimal big_plus_big(big_decimal value_1, big_decimal value_2);
 // Вычесть одно из второго, положительные одного порядка
 big_decimal big_minus_big(big_decimal value_1, big_decimal value_2);
+// Деление
+big_decimal big_div_big(big_decimal divisible, big_decimal divider,
+                        big_decimal *result);
 // Умножение на 10
 big_decimal big_x10(big_decimal value);
 // Приведение к одному порядку
 void normalization(big_decimal *value_1, big_decimal *value_2);
+// Получение ширины числа
+int get_width(big_decimal value);
 
 // Меньше
 int big_is_less(big_decimal value_1, big_decimal value_2);
@@ -101,4 +106,6 @@ int big_is_greater_or_equal(big_decimal value_1, big_decimal value_2);
 int big_is_equal(big_decimal value_1, big_decimal value_2);
 // Не равно
 int big_is_not_equal(big_decimal value_1, big_decimal value_2);
+// Меньше без нормализации
+int mantissa_is_less(big_decimal value_1, big_decimal value_2);
 #endif  //  SRC_S21_DECIMAL_H_

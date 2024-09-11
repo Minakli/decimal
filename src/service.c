@@ -13,7 +13,7 @@ void print_binary(big_decimal a) {
 }
 
 bool check_bit(big_decimal a, int num) {
-  return (a.bits[num / 32] >> (num % 32)) & 1 ? true : false;
+  return (a.bits[num / 32] >> (num % 32)) & 1;
 }
 
 void set_bit(big_decimal *a, int num, int choice) {
@@ -21,7 +21,7 @@ void set_bit(big_decimal *a, int num, int choice) {
                              : a->bits[num / 32] & ~(1 << (num % 32));
 }
 
-bool check_sign(unsigned value) { return ((value >> 31) & 1) ? true : false; }
+bool check_sign(unsigned value) { return (value >> 31) & 1; }
 
 void set_sign(unsigned *value, bool choice) {
   *value = choice ? *value | (choice << 31) : *value & ~(1 << 31);
@@ -31,7 +31,6 @@ int get_scale(unsigned value) { return (value >> 16) & 255; }
 
 void set_scale(unsigned *value, int num) {
   *value = (*value & (1 << 31)) | num << 16;
-  // *value = (((*value >> 16) & 0b1000000000000000) | num) << 16;
 }
 
 bool is_not_null(big_decimal a) {
@@ -121,12 +120,18 @@ void normalization(big_decimal *value_1, big_decimal *value_2) {
   }
 }
 
+// Получение ширины числа
+int get_width(big_decimal value) {
+  int width = 0;
+  for (int i = 32 * 7 - 1; i >= 0 && !width; i--) {
+    if (check_bit(value, i)) width = i;
+  }
+  return width;
+}
 // void print_decimal(s21_decimal a){
 // }
 
 // Проверка на бесконечность или переполнение
-
-#include "s21_decimal.h"
 
 // Меньше
 int big_is_less(big_decimal value_1, big_decimal value_2) {
@@ -134,7 +139,7 @@ int big_is_less(big_decimal value_1, big_decimal value_2) {
   big_decimal tmp_2 = value_2;
   int result = -1;
   normalization(&tmp_1, &tmp_2);
-  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
     result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
              : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
                                                          : -1;
@@ -147,7 +152,7 @@ int big_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
   big_decimal tmp_2 = value_2;
   int result = -1;
   normalization(&tmp_1, &tmp_2);
-  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
     result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
              : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
                                                          : -1;
@@ -160,7 +165,7 @@ int big_is_greater(big_decimal value_1, big_decimal value_2) {
   big_decimal tmp_2 = value_2;
   int result = -1;
   normalization(&tmp_1, &tmp_2);
-  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
     result = check_bit(tmp_1, i) > check_bit(tmp_2, i)   ? 1
              : check_bit(tmp_1, i) < check_bit(tmp_2, i) ? 0
                                                          : -1;
@@ -173,7 +178,7 @@ int big_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
   big_decimal tmp_2 = value_2;
   int result = -1;
   normalization(&tmp_1, &tmp_2);
-  for (int i = 32 * 7; i > 0 && result == -1; i--) {
+  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
     result = check_bit(tmp_1, i) > check_bit(tmp_2, i)   ? 1
              : check_bit(tmp_1, i) < check_bit(tmp_2, i) ? 0
                                                          : -1;
@@ -186,7 +191,7 @@ int big_is_equal(big_decimal value_1, big_decimal value_2) {
   big_decimal tmp_2 = value_2;
   int result = 1;
   normalization(&tmp_1, &tmp_2);
-  for (int i = 32 * 7; i > 0 && result; i--) {
+  for (int i = 32 * 7 - 1; i >= 0 && result; i--) {
     if (check_bit(tmp_1, i) != check_bit(tmp_2, i)) result = 0;
   }
   return result;
@@ -197,8 +202,21 @@ int big_is_not_equal(big_decimal value_1, big_decimal value_2) {
   big_decimal tmp_2 = value_2;
   int result = 0;
   normalization(&tmp_1, &tmp_2);
-  for (int i = 32 * 7; i > 0 && result > -1; i--) {
+  for (int i = 32 * 7 - 1; i >= 0 && result > -1; i--) {
     if (check_bit(tmp_1, i) < check_bit(tmp_2, i)) result = 1;
+  }
+  return (result == 1) ? 1 : 0;
+}
+
+// Меньше без нормализации
+int mantissa_is_less(big_decimal value_1, big_decimal value_2) {
+  big_decimal tmp_1 = value_1;
+  big_decimal tmp_2 = value_2;
+  int result = -1;
+  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
+    result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
+             : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
+                                                         : -1;
   }
   return (result == 1) ? 1 : 0;
 }

@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "stdio.h": "c",
-        "stdbool.h": "c",
-        "s21_decimal.h": "c",
-        "type_traits": "c"
-    }
-}
