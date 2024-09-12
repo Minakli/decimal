@@ -4,7 +4,7 @@ int main(void) {
   int failed = 0;
   int success = 0;
   Suite *string_test[] = {
-      tests_converters(), tests_division(), tests_functions(), tests_mul()
+      tests_converters(), tests_division(), tests_functions(), tests_mul(), tests_print_decimal()
       // , tests_add()
   };
 

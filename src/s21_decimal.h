@@ -61,8 +61,6 @@ void print_binary(big_decimal a);
 bool check_bit(big_decimal a, int num);
 // Установка указанного бита указанным значением
 void set_bit(big_decimal *a, int num, int choice);
-// Печать децимел в десятичном виде (УБРАТЬ!)
-void print_decimal(s21_decimal a);
 // Проверить знак
 bool check_sign(unsigned value);
 // Установить знак
@@ -108,4 +106,9 @@ int big_is_equal(big_decimal value_1, big_decimal value_2);
 int big_is_not_equal(big_decimal value_1, big_decimal value_2);
 // Меньше без нормализации
 int mantissa_is_less(big_decimal value_1, big_decimal value_2);
+
+void divide_96bit_by_10(unsigned int *high, unsigned int *mid, unsigned int *low, unsigned int *remainder);
+
+void print_decimal(s21_decimal a, char *buffer, size_t buffer_size);
+
 #endif  //  SRC_S21_DECIMAL_H_
