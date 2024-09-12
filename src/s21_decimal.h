@@ -93,17 +93,17 @@ void normalization(big_decimal *value_1, big_decimal *value_2);
 int get_width(big_decimal value);
 
 // Меньше
-int big_is_less(big_decimal value_1, big_decimal value_2);
+int big_mantissa_is_less(big_decimal value_1, big_decimal value_2);
 // Меньше или равно
-int big_is_less_or_equal(big_decimal value_1, big_decimal value_2);
+int big_mantissa_is_less_or_equal(big_decimal value_1, big_decimal value_2);
 // Больше
-int big_is_greater(big_decimal value_1, big_decimal value_2);
+int big_mantissa_is_greater(big_decimal value_1, big_decimal value_2);
 // Больше или равно
-int big_is_greater_or_equal(big_decimal value_1, big_decimal value_2);
+int big_mantissa_is_greater_or_equal(big_decimal value_1, big_decimal value_2);
 // Равно
-int big_is_equal(big_decimal value_1, big_decimal value_2);
+int big_mantissa_is_equal(big_decimal value_1, big_decimal value_2);
 // Не равно
-int big_is_not_equal(big_decimal value_1, big_decimal value_2);
+int big_mantissa_is_not_equal(big_decimal value_1, big_decimal value_2);
 // Меньше без нормализации
 int mantissa_is_less(big_decimal value_1, big_decimal value_2);
 

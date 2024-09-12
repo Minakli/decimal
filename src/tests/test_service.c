@@ -99,52 +99,52 @@ END_TEST
 START_TEST(test_func_insert_12) {
   big_decimal value_1 = {{0, 0, 0, 222, 0, 0, 0, 0}};
   big_decimal value_2 = {{0, 0, 0, 111, 0, 0, 0, 0}};
-  ck_assert_int_eq(big_is_less(value_2, value_1), 1);
-  ck_assert_int_eq(big_is_less(value_1, value_1), 0);
+  ck_assert_int_eq(big_mantissa_is_less(value_2, value_1), 1);
+  ck_assert_int_eq(big_mantissa_is_less(value_1, value_1), 0);
 }
 END_TEST
 
 START_TEST(test_func_insert_13) {
   big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
-  ck_assert_int_eq(big_is_less_or_equal(value_2, value_1), 1);
-  ck_assert_int_eq(big_is_less_or_equal(value_1, value_1), 1);
-  ck_assert_int_eq(big_is_less_or_equal(value_1, value_2), 0);
+  ck_assert_int_eq(big_mantissa_is_less_or_equal(value_2, value_1), 1);
+  ck_assert_int_eq(big_mantissa_is_less_or_equal(value_1, value_1), 1);
+  ck_assert_int_eq(big_mantissa_is_less_or_equal(value_1, value_2), 0);
 }
 END_TEST
 
 START_TEST(test_func_insert_14) {
   big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
-  ck_assert_int_eq(big_is_greater(value_1, value_2), 1);
-  ck_assert_int_eq(big_is_greater(value_1, value_1), 0);
+  ck_assert_int_eq(big_mantissa_is_greater(value_1, value_2), 1);
+  ck_assert_int_eq(big_mantissa_is_greater(value_1, value_1), 0);
 }
 END_TEST
 
 START_TEST(test_func_insert_15) {
   big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
-  ck_assert_int_eq(big_is_greater_or_equal(value_1, value_2), 1);
-  ck_assert_int_eq(big_is_greater_or_equal(value_1, value_1), 1);
-  ck_assert_int_eq(big_is_greater_or_equal(value_2, value_1), 0);
+  ck_assert_int_eq(big_mantissa_is_greater_or_equal(value_1, value_2), 1);
+  ck_assert_int_eq(big_mantissa_is_greater_or_equal(value_1, value_1), 1);
+  ck_assert_int_eq(big_mantissa_is_greater_or_equal(value_2, value_1), 0);
 }
 END_TEST
 
 START_TEST(test_func_insert_16) {
   big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
-  ck_assert_int_eq(big_is_equal(value_1, value_2), 0);
-  ck_assert_int_eq(big_is_equal(value_1, value_1), 1);
-  ck_assert_int_eq(big_is_equal(value_2, value_1), 0);
+  ck_assert_int_eq(big_mantissa_is_equal(value_1, value_2), 0);
+  ck_assert_int_eq(big_mantissa_is_equal(value_1, value_1), 1);
+  ck_assert_int_eq(big_mantissa_is_equal(value_2, value_1), 0);
 }
 END_TEST
 
 START_TEST(test_func_insert_17) {
   big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
-  ck_assert_int_eq(big_is_not_equal(value_1, value_2), 1);
-  ck_assert_int_eq(big_is_not_equal(value_1, value_1), 0);
-  ck_assert_int_eq(big_is_not_equal(value_2, value_1), 1);
+  ck_assert_int_eq(big_mantissa_is_not_equal(value_1, value_2), 1);
+  ck_assert_int_eq(big_mantissa_is_not_equal(value_1, value_1), 0);
+  ck_assert_int_eq(big_mantissa_is_not_equal(value_2, value_1), 1);
 }
 END_TEST
 

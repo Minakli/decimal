@@ -134,89 +134,58 @@ int get_width(big_decimal value) {
 // Проверка на бесконечность или переполнение
 
 // Меньше
-int big_is_less(big_decimal value_1, big_decimal value_2) {
-  big_decimal tmp_1 = value_1;
-  big_decimal tmp_2 = value_2;
+int big_mantissa_is_less(big_decimal value_1, big_decimal value_2) {
   int result = -1;
-  normalization(&tmp_1, &tmp_2);
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
-             : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
-                                                         : -1;
+    result = check_bit(value_1, i) < check_bit(value_2, i)   ? 1
+             : check_bit(value_1, i) > check_bit(value_2, i) ? 0
+                                                             : -1;
   }
   return (result == 1) ? 1 : 0;
 }
 // Меньше или равно
-int big_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
-  big_decimal tmp_1 = value_1;
-  big_decimal tmp_2 = value_2;
+int big_mantissa_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
   int result = -1;
-  normalization(&tmp_1, &tmp_2);
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
-             : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
-                                                         : -1;
+    result = check_bit(value_1, i) < check_bit(value_2, i)   ? 1
+             : check_bit(value_1, i) > check_bit(value_2, i) ? 0
+                                                             : -1;
   }
   return (result != 0) ? 1 : 0;
 }
 // Больше
-int big_is_greater(big_decimal value_1, big_decimal value_2) {
-  big_decimal tmp_1 = value_1;
-  big_decimal tmp_2 = value_2;
+int big_mantissa_is_greater(big_decimal value_1, big_decimal value_2) {
   int result = -1;
-  normalization(&tmp_1, &tmp_2);
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(tmp_1, i) > check_bit(tmp_2, i)   ? 1
-             : check_bit(tmp_1, i) < check_bit(tmp_2, i) ? 0
-                                                         : -1;
+    result = check_bit(value_1, i) > check_bit(value_2, i)   ? 1
+             : check_bit(value_1, i) < check_bit(value_2, i) ? 0
+                                                             : -1;
   }
   return (result == 1) ? 1 : 0;
 }
 // Больше или равно
-int big_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
-  big_decimal tmp_1 = value_1;
-  big_decimal tmp_2 = value_2;
+int big_mantissa_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
   int result = -1;
-  normalization(&tmp_1, &tmp_2);
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(tmp_1, i) > check_bit(tmp_2, i)   ? 1
-             : check_bit(tmp_1, i) < check_bit(tmp_2, i) ? 0
-                                                         : -1;
+    result = check_bit(value_1, i) > check_bit(value_2, i)   ? 1
+             : check_bit(value_1, i) < check_bit(value_2, i) ? 0
+                                                             : -1;
   }
   return (result != 0) ? 1 : 0;
 }
 // Равно
-int big_is_equal(big_decimal value_1, big_decimal value_2) {
-  big_decimal tmp_1 = value_1;
-  big_decimal tmp_2 = value_2;
+int big_mantissa_is_equal(big_decimal value_1, big_decimal value_2) {
   int result = 1;
-  normalization(&tmp_1, &tmp_2);
   for (int i = 32 * 7 - 1; i >= 0 && result; i--) {
-    if (check_bit(tmp_1, i) != check_bit(tmp_2, i)) result = 0;
+    if (check_bit(value_1, i) != check_bit(value_2, i)) result = 0;
   }
   return result;
 }
 // Не равно
-int big_is_not_equal(big_decimal value_1, big_decimal value_2) {
-  big_decimal tmp_1 = value_1;
-  big_decimal tmp_2 = value_2;
+int big_mantissa_is_not_equal(big_decimal value_1, big_decimal value_2) {
   int result = 0;
-  normalization(&tmp_1, &tmp_2);
-  for (int i = 32 * 7 - 1; i >= 0 && result > -1; i--) {
-    if (check_bit(tmp_1, i) < check_bit(tmp_2, i)) result = 1;
-  }
-  return (result == 1) ? 1 : 0;
-}
-
-// Меньше без нормализации
-int mantissa_is_less(big_decimal value_1, big_decimal value_2) {
-  big_decimal tmp_1 = value_1;
-  big_decimal tmp_2 = value_2;
-  int result = -1;
-  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(tmp_1, i) < check_bit(tmp_2, i)   ? 1
-             : check_bit(tmp_1, i) > check_bit(tmp_2, i) ? 0
-                                                         : -1;
+  for (int i = 32 * 7 - 1; i >= 0 && result == 0; i--) {
+    if (check_bit(value_1, i) != check_bit(value_2, i)) result = 1;
   }
   return (result == 1) ? 1 : 0;
 }
