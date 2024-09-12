@@ -23,8 +23,8 @@ END_TEST
 
 START_TEST(test_division_insert_3) {
   big_decimal a = {{3680, 0, 0, 0, 0, 0, 0, 0}};
-  big_decimal b = {{5, 0, 0, 0, 0, 0, 0, 0, 0}};
-  big_decimal c = {{0, 0, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal b = {{5, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal c = {{0, 0, 0, 0, 0, 0, 0, 0}};
   big_decimal d = big_div_big(a, b, &c);
   ck_assert_int_eq(d.bits[0], 0);
   ck_assert_int_eq(c.bits[0], 736);
