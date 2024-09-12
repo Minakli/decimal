@@ -46,9 +46,16 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
       divisible = big_x10(divisible);
       set_scale(&(divisible.bits[7]), get_scale(divisible.bits[7]) + 1);
     }
-
-    *result = from_big(tmp_res);
   }
+
+  int scale = get_scale(divisible.bits[7]) - get_scale(divider.bits[7]);
+  printf("%d\n", divisible.bits[7]);
+  if (scale >= 0) {
+    set_scale(&(tmp_res.bits[7]), scale);
+  } else {
+    while (scale++ < 0) tmp_res = big_x10(tmp_res);
+  }
+  *result = from_big(tmp_res);
   // if(res == 0 && is_inf(*result)) {
   //   res = TOO_BIG;
   // } else if(res == 0 && is_minus_inf(*result)) {

@@ -64,7 +64,7 @@ big_decimal shift_big_decimal(big_decimal a, int value, char vector) {
 }
 
 big_decimal to_big(s21_decimal a) {
-  big_decimal b = {0};
+  big_decimal b = {{0, 0, 0, 0, 0, 0, 0, 0}};
   for (int i = 0; i < 3; i++) b.bits[i] = a.bits[i];
   b.bits[7] = a.bits[3];
   return b;
@@ -128,9 +128,6 @@ int get_width(big_decimal value) {
   }
   return width;
 }
-// void print_decimal(s21_decimal a){
-// }
-
 // Проверка на бесконечность или переполнение
 
 // Меньше

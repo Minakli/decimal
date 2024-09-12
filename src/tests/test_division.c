@@ -4,9 +4,10 @@ START_TEST(test_division_insert_1) {
   s21_decimal a = {{368, 0, 0, 0}};
   s21_decimal b = {{5, 0, 0, 0}};
   s21_decimal c = {{0, 0, 0, 0}};
+  ck_assert_int_eq(get_scale(c.bits[3]), 0);
   ck_assert_int_eq(s21_div(a, b, &c), 0);
+  ck_assert_int_eq(get_scale(c.bits[3]), 1);
   ck_assert_int_eq(c.bits[0], 736);
-  // print_32_binary(c.bits[3]);
 }
 END_TEST
 

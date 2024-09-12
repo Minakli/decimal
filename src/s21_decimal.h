@@ -107,7 +107,8 @@ int big_mantissa_is_not_equal(big_decimal value_1, big_decimal value_2);
 // Меньше без нормализации
 int mantissa_is_less(big_decimal value_1, big_decimal value_2);
 
-void divide_96bit_by_10(unsigned int *high, unsigned int *mid, unsigned int *low, unsigned int *remainder);
+void divide_96bit_by_10(unsigned int *high, unsigned int *mid,
+                        unsigned int *low, unsigned int *remainder);
 
 void print_decimal(s21_decimal a, char *buffer, size_t buffer_size);
 
