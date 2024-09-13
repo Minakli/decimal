@@ -97,6 +97,13 @@ START_TEST(test_func_insert_11) {
 END_TEST
 
 START_TEST(test_func_insert_12) {
+  big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal value_2 = big_div10(value_1);
+  ck_assert_int_eq(value_2.bits[0], 22);
+}
+END_TEST
+
+START_TEST(test_func_insert_20) {
   big_decimal value_1 = {{0, 0, 0, 222, 0, 0, 0, 0}};
   big_decimal value_2 = {{0, 0, 0, 111, 0, 0, 0, 0}};
   ck_assert_int_eq(big_mantissa_is_less(value_2, value_1), 1);
@@ -104,7 +111,7 @@ START_TEST(test_func_insert_12) {
 }
 END_TEST
 
-START_TEST(test_func_insert_13) {
+START_TEST(test_func_insert_21) {
   big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
   ck_assert_int_eq(big_mantissa_is_less_or_equal(value_2, value_1), 1);
@@ -113,7 +120,7 @@ START_TEST(test_func_insert_13) {
 }
 END_TEST
 
-START_TEST(test_func_insert_14) {
+START_TEST(test_func_insert_22) {
   big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 0, 0, 0, 0, 0, 0}};
   ck_assert_int_eq(big_mantissa_is_greater(value_1, value_2), 1);
@@ -121,7 +128,7 @@ START_TEST(test_func_insert_14) {
 }
 END_TEST
 
-START_TEST(test_func_insert_15) {
+START_TEST(test_func_insert_23) {
   big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
   ck_assert_int_eq(big_mantissa_is_greater_or_equal(value_1, value_2), 1);
@@ -130,7 +137,7 @@ START_TEST(test_func_insert_15) {
 }
 END_TEST
 
-START_TEST(test_func_insert_16) {
+START_TEST(test_func_insert_24) {
   big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
   ck_assert_int_eq(big_mantissa_is_equal(value_1, value_2), 0);
@@ -139,7 +146,7 @@ START_TEST(test_func_insert_16) {
 }
 END_TEST
 
-START_TEST(test_func_insert_17) {
+START_TEST(test_func_insert_25) {
   big_decimal value_1 = {{222, 0, 222, 0, 0, 0, 0, 0}};
   big_decimal value_2 = {{111, 0, 111, 0, 0, 0, 0, 0}};
   ck_assert_int_eq(big_mantissa_is_not_equal(value_1, value_2), 1);
@@ -164,11 +171,11 @@ Suite *tests_functions(void) {
   tcase_add_test(tc_core, test_func_insert_10);
   tcase_add_test(tc_core, test_func_insert_11);
   tcase_add_test(tc_core, test_func_insert_12);
-  tcase_add_test(tc_core, test_func_insert_13);
-  tcase_add_test(tc_core, test_func_insert_14);
-  tcase_add_test(tc_core, test_func_insert_15);
-  tcase_add_test(tc_core, test_func_insert_16);
-  tcase_add_test(tc_core, test_func_insert_17);
+  tcase_add_test(tc_core, test_func_insert_20);
+  tcase_add_test(tc_core, test_func_insert_21);
+  tcase_add_test(tc_core, test_func_insert_22);
+  tcase_add_test(tc_core, test_func_insert_23);
+  tcase_add_test(tc_core, test_func_insert_24);
 
   suite_add_tcase(s, tc_core);
   return s;

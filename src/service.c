@@ -39,7 +39,7 @@ bool is_not_null(big_decimal a) {
              ? false
              : true;
 }
-// Подозрительно работает, не затирал бы скейл
+
 big_decimal shift_big_decimal(big_decimal a, int value, char vector) {
   unsigned memory = 0, tmp = 0;
   while (value > 0) {
@@ -107,7 +107,13 @@ big_decimal big_x10(big_decimal value) {
                       shift_big_decimal(value, 1, 'L'));
 }
 
-// Приведение к одинаковому порядку
+big_decimal big_div10(big_decimal value) {
+  big_decimal divider = {{10, 0, 0, 0, 0, 0, 0, 0}};
+  big_decimal result = {{0, 0, 0, 0, 0, 0, 0, 0}};
+  big_div_big(value, divider, &result);
+  return result;
+}
+
 void normalization(big_decimal *value_1, big_decimal *value_2) {
   int delta = get_scale(value_1->bits[7]) - get_scale(value_2->bits[7]);
   if (delta > 0) {
@@ -120,7 +126,6 @@ void normalization(big_decimal *value_1, big_decimal *value_2) {
   }
 }
 
-// Получение ширины числа
 int get_width(big_decimal value) {
   int width = 0;
   for (int i = 32 * 7 - 1; i >= 0 && !width; i--) {
@@ -130,7 +135,6 @@ int get_width(big_decimal value) {
 }
 // Проверка на бесконечность или переполнение
 
-// Меньше
 int big_mantissa_is_less(big_decimal value_1, big_decimal value_2) {
   int result = -1;
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
@@ -140,7 +144,7 @@ int big_mantissa_is_less(big_decimal value_1, big_decimal value_2) {
   }
   return (result == 1) ? 1 : 0;
 }
-// Меньше или равно
+
 int big_mantissa_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
   int result = -1;
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
@@ -150,7 +154,7 @@ int big_mantissa_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
   }
   return (result != 0) ? 1 : 0;
 }
-// Больше
+
 int big_mantissa_is_greater(big_decimal value_1, big_decimal value_2) {
   int result = -1;
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
@@ -160,7 +164,7 @@ int big_mantissa_is_greater(big_decimal value_1, big_decimal value_2) {
   }
   return (result == 1) ? 1 : 0;
 }
-// Больше или равно
+
 int big_mantissa_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
   int result = -1;
   for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
@@ -170,7 +174,7 @@ int big_mantissa_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
   }
   return (result != 0) ? 1 : 0;
 }
-// Равно
+
 int big_mantissa_is_equal(big_decimal value_1, big_decimal value_2) {
   int result = 1;
   for (int i = 32 * 7 - 1; i >= 0 && result; i--) {
@@ -178,7 +182,7 @@ int big_mantissa_is_equal(big_decimal value_1, big_decimal value_2) {
   }
   return result;
 }
-// Не равно
+
 int big_mantissa_is_not_equal(big_decimal value_1, big_decimal value_2) {
   int result = 0;
   for (int i = 32 * 7 - 1; i >= 0 && result == 0; i--) {
