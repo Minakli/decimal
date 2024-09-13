@@ -56,6 +56,8 @@ int s21_is_not_equal(s21_decimal, s21_decimal);
 // Возвращает целые цифры указанного Decimal числа; любые дробные цифры
 // отбрасываются, включая конечные нули.
 int s21_truncate(s21_decimal value, s21_decimal *result);
+// Возвращает результат умножения указанного Decimal на -1.
+int s21_negate(s21_decimal value, s21_decimal *result);
 
 // Печать одного числа в двоичном виде (УБРАТЬ!)
 void print_32_binary(int a);
