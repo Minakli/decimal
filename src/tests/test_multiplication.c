@@ -1,17 +1,26 @@
 #include "test.h"
 
-#define DECIMAL_SIZE 128
-#define DECIMAL_SIGN_BIT 127
-#define DECIMAL_MANTISSA_SIZE 96
-#define DECIMAL_WORD_SIZE 32
-#define DECIMAL_WORD_COUNT 3
-#define DECIMAL_SIGN_SHIFT 31              // 127 % 32 = 31
-#define DECIMAL_SCALE_MAX_VALUE 28         // 0b00011100
-#define DECIMAL_SCALE_SHIFT 16             // 16-23
-#define DECIMAL_SCALE_SIZE_MASK 0xFF       // 0b11111111 8 bits
-#define DECIMAL_MAX_WORD_VALUE 0xFFFFFFFF  // 0b11111111111111111111111111111111
-#define DECIMAL_MAX_VALUE 7.9228162514264337593543950335e28
-#define EPSILON 1e-6
+// #define DECIMAL_SIZE 128
+// #define DECIMAL_SIGN_BIT 127
+// #define DECIMAL_MANTISSA_SIZE 96
+// #define DECIMAL_WORD_SIZE 32
+// #define DECIMAL_WORD_COUNT 3
+// #define DECIMAL_SIGN_SHIFT 31              // 127 % 32 = 31
+// #define DECIMAL_SCALE_MAX_VALUE 28         // 0b00011100
+// #define DECIMAL_SCALE_SHIFT 16             // 16-23
+// #define DECIMAL_SCALE_SIZE_MASK 0xFF       // 0b11111111 8 bits
+// #define DECIMAL_MAX_WORD_VALUE 0xFFFFFFFF  //
+// 0b11111111111111111111111111111111 #define
+// DECIMAL_MAX_VALUE 7.9228162514264337593543950335e28 #define EPSILON 1e-6
+
+START_TEST(mul_null) {
+  s21_decimal value_1 = {{2, 0, 0, 0}};
+  s21_decimal value_2 = {{3, 0, 0, 0}};
+  int error = s21_mul(value_1, value_2, NULL);
+  ck_assert_int_eq(error, 1);
+}
+END_TEST
+
 START_TEST(simple_mul) {
   s21_decimal value_1 = {{2, 0, 0, 0}};
   s21_decimal value_2 = {{3, 0, 0, 0}};
@@ -31,6 +40,32 @@ START_TEST(simple_mul_negative) {
   s21_decimal result = {{0}};
   int error = s21_mul(value_1, value_2, &result);
   s21_decimal expected = {{308, 0, 0, 1 << 31}};
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(simple_mul_zero) {
+  s21_decimal value_1 = {{10, 0, 0, 0}};
+  s21_decimal value_2 = {{0, 0, 0, 0}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  s21_decimal expected = {{0, 0, 0, 0}};
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(simple_mul_zero_1) {
+  s21_decimal value_1 = {{0, 0, 0, 0}};
+  s21_decimal value_2 = {{0, 1, 0, 0}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  s21_decimal expected = {{0, 0, 0, 0}};
   for (int i = 0; i < 4; i++) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
   }
@@ -235,8 +270,11 @@ Suite *tests_mul(void) {
   Suite *s = suite_create("Mul");
   TCase *tc_core = tcase_create("Core");
 
+  tcase_add_test(tc_core, mul_null);
   tcase_add_test(tc_core, simple_mul);
   tcase_add_test(tc_core, simple_mul_negative);
+  tcase_add_test(tc_core, simple_mul_zero);
+  tcase_add_test(tc_core, simple_mul_zero_1);
   tcase_add_test(tc_core, mul_negative);
   tcase_add_test(tc_core, mul_negative_2);
   tcase_add_test(tc_core, mul_negative_overword);

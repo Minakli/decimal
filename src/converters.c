@@ -1,77 +1,56 @@
 #include <limits.h>
 // #include <math.h>  //надо вынести в хедер
+#include <limits.h>
+#include <math.h>
 #include <string.h>
 
 #include "s21_decimal.h"
 
-s21_decimal increase_scale_to_zero(s21_decimal src, int *source_scale);
+#define S21_MAX_FLOAT 7.9228162514264337593543950335e+28
+#define S21_MIN_FLOAT 1e-28
 
-s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale);
+s21_decimal increase_scale_to_zero(s21_decimal src, int *source_scale,
+                                   bool *res);
+
+s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale,
+                                   bool *res);
 
 int is_nan(float src);
 
 int is_inf(float src);
 
 int s21_from_int_to_decimal(int src, s21_decimal *dst) {
-  bool error_status = false;
+  bool res = OK;
   if (dst) {
     for (int i = 0; i < 4; i++) {
       dst->bits[i] = 0;
     }
     if (src < 0) {
-      bool result_sign = true;
+      bool result_sign = CONVERT_ERROR;
       set_sign(&dst->bits[3], result_sign);
       src = -src;
     }
     dst->bits[0] = src;
   } else
-    error_status = true;
+    res = CONVERT_ERROR;
 
-  return error_status;
-}
-
-int s21_from_decimal_to_int(s21_decimal src, int *dst) {
-  bool error_status = false;
-  bool source_sign = check_sign(src.bits[3]);
-  unsigned int exponent = get_scale(src.bits[3]);
-  if (exponent > 28) error_status = true;
-
-  for (int i = exponent; i > 0; --i) {
-    unsigned long long int temp = src.bits[2] % 10;
-    src.bits[2] /= 10;
-
-    temp = (temp << 32) | src.bits[1];
-    src.bits[1] = temp / 10;
-
-    temp = ((temp % 10) << 32) | src.bits[0];
-    src.bits[0] = temp / 10;
-  }
-
-  // is overflow
-  if (src.bits[2] != 0 || src.bits[1] != 0 ||
-      src.bits[0] > (INT_MAX + source_sign)) {
-    error_status = true;
-    *dst = 0;
-  }
-
-  *dst = source_sign ? -src.bits[0] : src.bits[0];
-
-  return error_status;
+  return res;
 }
 
 int s21_from_float_to_decimal(float src, s21_decimal *dst) {
-  bool error_status = false;
-  bool scale_sign = false;
+  bool is_zero = (src == 0);
+  bool res = OK;
+  bool scale_sign = OK;
   int source_scale = 0;
   char string_source[16] = {0};
-  if (is_inf(src) || is_nan(src)) {
-    error_status = true;
+  if (is_inf(src) || is_nan(src) || !dst) {
+    res = CONVERT_ERROR;
   }
-  if (!error_status) {
+  if (!res) {
     snprintf(string_source, 16, "%e", src);
     for (int i = 0; string_source[i]; i++) {
       if (string_source[i] == '-') {
-        bool result_sign = true;
+        bool result_sign = CONVERT_ERROR;
         set_sign(&dst->bits[3], result_sign);
         i++;
       }
@@ -80,7 +59,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
       } else if (string_source[i] == 'e') {
         i++;
         if (string_source[i] == '-') {
-          scale_sign = true;
+          scale_sign = CONVERT_ERROR;
         }
         i++;
         if ((string_source[i] >= '0' && string_source[i] <= '9')) {
@@ -91,56 +70,128 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
         }
       }
     }
-  }
-  if (!scale_sign) {
-    source_scale = -source_scale;
-  }
-  source_scale += 6;
+    if (!scale_sign) {
+      source_scale = -source_scale;
+    }
+    source_scale += 6;
 
-  *dst = increase_scale_to_zero(*dst, &source_scale);
-  *dst = decrease_scale_to_zero(*dst, &source_scale);
-  // *dst = increase_scale_to_zero(*dst, &source_scale);
+    *dst = increase_scale_to_zero(*dst, &source_scale, &res);
+    if (dst->bits[2] != 0 || dst->bits[1] != 0 || dst->bits[0] != 0) {
+      *dst = decrease_scale_to_zero(*dst, &source_scale, &res);
+    }
 
-  if (dst->bits[2] == 0 && dst->bits[1] == 0 && dst->bits[0] == 0 &&
-      source_scale != 0) {
-    error_status = true;
-  }
+    if (dst->bits[2] == 0 && dst->bits[1] == 0 && dst->bits[0] == 0 &&
+        source_scale > 0) {
+      res = CONVERT_ERROR;
+    }
 
-  if (source_scale >= 0 && source_scale <= 28) {
-    set_scale(&dst->bits[3], source_scale);
-  } else {
-    error_status = true;
-    for (int i = 0; i < 4; i++) {
-      dst->bits[i] = 0;
+    if (source_scale >= 0 && source_scale <= 28) {
+      set_scale(&dst->bits[3], source_scale);
+    } else {
+      res = CONVERT_ERROR;
+      for (int i = 0; i < 4; i++) {
+        dst->bits[i] = 0;
+      }
+    }
+    if (is_zero) {
+      res = OK;
+      for (int i = 0; i < 4; i++) {
+        dst->bits[i] = 0;
+      }
     }
   }
 
-  return error_status;
+  return res;
 }
 
-s21_decimal increase_scale_to_zero(s21_decimal src, int *source_scale) {
-  while (*source_scale < 0) {
+int s21_from_decimal_to_int(s21_decimal src, int *dst) {
+  bool res = OK;
+  if (dst) {
+    bool source_sign = check_sign(src.bits[3]);
+    unsigned int exponent = get_scale(src.bits[3]);
+    if (exponent > 28) res = CONVERT_ERROR;
+
+    for (int i = exponent; i > 0; --i) {
+      unsigned long long int temp = src.bits[2] % 10;
+      src.bits[2] /= 10;
+
+      temp = (temp << 32) | src.bits[1];
+      src.bits[1] = temp / 10;
+
+      temp = ((temp % 10) << 32) | src.bits[0];
+      src.bits[0] = temp / 10;
+    }
+
+    // is overflow
+    if (src.bits[2] != 0 || src.bits[1] != 0 ||
+        src.bits[0] > (INT_MAX + source_sign)) {
+      res = CONVERT_ERROR;
+      *dst = 0;
+    }
+
+    *dst = source_sign ? -src.bits[0] : src.bits[0];
+  } else
+    res = CONVERT_ERROR;
+  return res;
+}
+
+int s21_from_decimal_to_float(s21_decimal src, float *dst) {
+  bool res = OK;
+  if (dst) {
+    double temp_result = 0.0;
+    for (int i = 0; i < 3; i++) {
+      temp_result += (double)(src.bits[i]) * pow(2, 32 * i);
+    }
+    int source_scale = get_scale(src.bits[3]);
+    temp_result *= pow(10, -source_scale);
+    if (check_sign(src.bits[3])) temp_result *= -1;
+    *dst = (float)temp_result;
+  } else
+    res = CONVERT_ERROR;
+  return res;
+}
+
+s21_decimal increase_scale_to_zero(s21_decimal src, int *source_scale,
+                                   bool *res) {
+  while (*source_scale < 0 && !(*res)) {
     s21_decimal multiplier = {{10, 0, 0, 0}};
-    s21_mul(src, multiplier, &src);
+    *res = s21_mul(src, multiplier, &src);
     (*source_scale)++;
   }
   return src;
 }
 
-s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale) {
-  while (((*source_scale > 0) && ((src.bits[0] % 10) == 0)) ||
-         (*source_scale > 28)) {
-    unsigned int remainder = 0;
-    for (int i = 2; i >= 0; --i) {
-      unsigned long long temp =
-          ((unsigned long long)remainder << 32) | src.bits[i];
-      src.bits[i] = temp / 10;
-      remainder = temp % 10;
+s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale,
+                                   bool *res) {
+  big_decimal temp = to_big(src);
+  big_decimal remainder = {{0}};
+  big_decimal divider = {{10}};
+  big_decimal garb = {{0}};
+  // remainder = big_div_big(temp, divider, &garb);
+
+  while ((*source_scale > 28)) {
+    remainder = big_div_big(temp, divider, &garb);
+    remainder = big_div_big(temp, divider, &temp);
+    if (temp.bits[2] == 0 && temp.bits[1] == 0 && temp.bits[0] == 0) {
+      *res = CONVERT_ERROR;
+    } else if (remainder.bits[0] > 5) {
+      temp.bits[0]++;  // надо прибавить 1 через сложение
     }
     (*source_scale)--;
   }
+
+  remainder = big_div_big(temp, divider, &garb);
+  while (((*source_scale > 0) && (remainder.bits[0] == 0))) {
+    // remainder = big_div_big(temp, divider, &garb);
+    remainder = big_div_big(temp, divider, &temp);
+    (*source_scale)--;
+  }
+
+  for (int i = 0; i < 3; i++) {
+    src.bits[i] = temp.bits[i];
+  }
+
   return src;
-  // return increase_scale_to_zero(src, source_scale);
 }
 
 int is_nan(float src) {
