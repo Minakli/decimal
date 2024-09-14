@@ -116,12 +116,13 @@ big_decimal big_div10(big_decimal value) {
 
 void normalization(big_decimal *value_1, big_decimal *value_2) {
   int delta = get_scale(value_1->bits[7]) - get_scale(value_2->bits[7]);
-  if (delta > 0) {
-    while (delta-- > 0) *value_2 = big_x10(*value_2);
+
+  while (delta-- > 0) {
+    *value_2 = big_x10(*value_2);
     set_scale(&(value_2->bits[7]), get_scale((value_1->bits[7])));
   }
-  if (delta < 0) {
-    while (delta++ < 0) *value_1 = big_x10(*value_1);
+  while (delta++ < 0) {
+    *value_1 = big_x10(*value_1);
     set_scale(&(value_1->bits[7]), get_scale((value_2->bits[7])));
   }
 }
