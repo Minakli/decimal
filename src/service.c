@@ -70,11 +70,29 @@ big_decimal to_big(s21_decimal a) {
   return b;
 }
 
+int is_overflow(big_decimal value) {
+  bool ret = false;
+  for (int i = 3; i < 7; i++) {
+    if (value.bits[i] != 0) {
+      ret = true;
+    }
+  }
+  return ret;
+}
+
 s21_decimal from_big(big_decimal a) {
   // Думаю, здесь будет округление ==================
   s21_decimal b = {0};
+  int scale = get_scale(a.bits[7]);
+  // if overflow
+  if (scale > 0 && is_overflow(a)) {
+    a = big_div10(a);
+    scale--;
+  }
+
   for (int i = 0; i < 3; i++) b.bits[i] = a.bits[i];
   b.bits[3] = a.bits[7];
+  set_scale(&b.bits[3], scale);
   return b;
 }
 
