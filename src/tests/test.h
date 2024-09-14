@@ -19,6 +19,7 @@ Suite *tests_mul(void);
 Suite *tests_print_decimal(void);
 
 Suite *tests_other(void);
-// Suite *tests_add(void);
+
+Suite *tests_add(void);
 
 #endif

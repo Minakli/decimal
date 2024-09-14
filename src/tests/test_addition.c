@@ -1,15 +1,17 @@
-// #include "test.h"
+#include "test.h"
 
-// START_TEST(test_add_insert_1) {
-//   s21_decimal a = {{368, 0, 0, 0}};
-//   s21_decimal b = {{5, 0, 0, 0}};
-//   s21_decimal c = {{0, 0, 0, 0}};
-//   ck_assert_int_eq(get_scale(c.bits[3]), 0);
-//   ck_assert_int_eq(s21_div(a, b, &c), 0);
-//   ck_assert_int_eq(get_scale(c.bits[3]), 1);
-//   ck_assert_int_eq(c.bits[0], 736);
-// }
-// END_TEST
+START_TEST(test_addition_1) {
+  s21_decimal a = {{3, 0, 0, 0}};
+  s21_decimal b = {{2, 0, 0, 0}};
+  s21_decimal c = {{0, 0, 0, 0}};
+  int error = s21_add(a, b, &c);
+  s21_decimal expected = {{5, 0, 0, 0}};
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(c.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
 
 // START_TEST(test_add_insert_2) {
 //   big_decimal a = {{365, 0, 0, 0, 0, 0, 0, 0}};
@@ -41,15 +43,12 @@
 // }
 // END_TEST
 
-// Suite *tests_division(void) {
-//   Suite *s = suite_create("Addition");
-//   TCase *tc_core = tcase_create("Core");
+Suite *tests_add(void) {
+  Suite *s = suite_create("Addition");
+  TCase *tc_core = tcase_create("Core");
 
-//   tcase_add_test(tc_core, test_add_insert_1);
-//   tcase_add_test(tc_core, test_add_insert_2);
-//   tcase_add_test(tc_core, test_add_insert_3);
-//   tcase_add_test(tc_core, test_add_insert_4);
+  tcase_add_test(tc_core, test_addition_1);
 
-//   suite_add_tcase(s, tc_core);
-//   return s;
-// }
+  suite_add_tcase(s, tc_core);
+  return s;
+}

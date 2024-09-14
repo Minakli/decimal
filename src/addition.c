@@ -9,7 +9,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   big_decimal tmp_2 = to_big(value_2);
   big_decimal tmp_res = to_big(*result);
   normalization(&tmp_1, &tmp_2);
-  if (check_sign(tmp_1.bits[7]) == check_sign(tmp_1.bits[7])) {
+  if (check_sign(tmp_1.bits[7]) == check_sign(tmp_2.bits[7])) {
     tmp_res = big_plus_big(tmp_1, tmp_2);
     set_sign(&(tmp_res.bits[7]), check_sign(tmp_1.bits[7]));
   } else {
@@ -23,7 +23,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
       //
     }
   }
-  set_scale(result->bits[3], get_scale(tmp_1.bits[7]));
+  set_scale(&result->bits[3], get_scale(tmp_1.bits[7]));
   *result = from_big(tmp_res);
   // is_inf
   // is_inf
