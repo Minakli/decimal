@@ -49,7 +49,6 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   }
 
   int scale = get_scale(divisible.bits[7]) - get_scale(divider.bits[7]);
-  printf("%d\n", divisible.bits[7]);
   if (scale >= 0) {
     set_scale(&(tmp_res.bits[7]), scale);
   } else {

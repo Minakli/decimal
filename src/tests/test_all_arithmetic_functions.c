@@ -244,7 +244,7 @@ START_TEST(fail_s21_add_1) {
   s21_decimal dec_2 = {{0x6324172e, 0x822, 0x0, 0x0}};
   s21_decimal result;
   // overflow
-  int check = 3; // Результат слишком мал или отрицательная бесконечность.
+  int check = 3;  // Результат слишком мал или отрицательная бесконечность.
   int return_value = s21_add(dec_1, dec_2, &result);
   ck_assert_int_eq(return_value, check);
 }
@@ -494,7 +494,7 @@ START_TEST(fail_s21_sub_1) {
   s21_decimal dec_2 = {{0xee6cf7e6, 0x72aa7fc7, 0x5445, 0x100000}};
   s21_decimal result;
   // overflow
-  int check = 3; // Результат слишком мал или отрицательная бесконечность.
+  int check = 3;  // Результат слишком мал или отрицательная бесконечность.
   int return_value = s21_sub(dec_1, dec_2, &result);
   ck_assert_int_eq(return_value, check);
 }
@@ -744,7 +744,7 @@ START_TEST(fail_s21_mul_1) {
   s21_decimal dec_2 = {{0xf9a0ba5e, 0xc6e4b72f, 0x69d, 0x0}};
   s21_decimal result;
   // overflow
-  int check = 2; // Результат слишком мал или отрицательная бесконечность.
+  int check = 2;  // Результат слишком мал или отрицательная бесконечность.
   int return_value = s21_mul(dec_1, dec_2, &result);
   ck_assert_int_eq(return_value, check);
 }
@@ -994,7 +994,7 @@ START_TEST(fail_s21_div_1) {
   s21_decimal dec_2 = {{0xd22fcfc1, 0xb9f099d4, 0x1e7ab, 0x0}};
   s21_decimal result;
   // overflow
-  int check = 2; // Результат слишком мал или отрицательная бесконечность.
+  int check = 2;  // Результат слишком мал или отрицательная бесконечность.
   int return_value = s21_div(dec_1, dec_2, &result);
   ck_assert_int_eq(return_value, check);
 }

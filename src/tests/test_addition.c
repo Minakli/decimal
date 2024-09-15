@@ -46,15 +46,21 @@ START_TEST(test_addition_3) {
 }
 END_TEST
 
-// START_TEST(test_add_insert_3) {
-//   big_decimal a = {{3680, 0, 0, 0, 0, 0, 0, 0}};
-//   big_decimal b = {{5, 0, 0, 0, 0, 0, 0, 0}};
-//   big_decimal c = {{0, 0, 0, 0, 0, 0, 0, 0}};
-//   big_decimal d = big_div_big(a, b, &c);
-//   ck_assert_int_eq(d.bits[0], 0);
-//   ck_assert_int_eq(c.bits[0], 736);
-// }
-// END_TEST
+START_TEST(test_addition_4) {
+  // 7.9228162514264337593543950335
+  s21_decimal a = {{0xffffffff, 0xffffffff, 0xffffffff, 0x1c0000}};
+  // 7.9228162514264337593543950335
+  s21_decimal b = {{0xffffffff, 0xffffffff, 0xffffffff, 0x1c0000}};
+  s21_decimal c = {{0, 0, 0, 0}};
+  int error = s21_sub(a, b, &c);
+  // 0
+  s21_decimal expected = {{0, 0, 0, 0x1b0000}};
+
+  ck_assert_int_eq(c.bits[0], expected.bits[0]);
+  ck_assert_int_eq(c.bits[1], expected.bits[1]);
+  ck_assert_int_eq(c.bits[2], expected.bits[2]);
+}
+END_TEST
 
 // START_TEST(test_add_insert_4) {
 //   big_decimal a = {{1000001, 0, 0, 0, 0, 0, 0, 0}};
@@ -73,6 +79,7 @@ Suite *tests_add(void) {
   tcase_add_test(tc_core, test_addition_1);
   tcase_add_test(tc_core, test_addition_2);
   tcase_add_test(tc_core, test_addition_3);
+  tcase_add_test(tc_core, test_addition_4);
 
   suite_add_tcase(s, tc_core);
   return s;
