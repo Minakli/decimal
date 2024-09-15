@@ -30,7 +30,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   if (!is_not_null(divider)) {
     res = DIV_BY_ZERO;
-  } else if (is_not_null(divider)) {
+  } else {
     int width_1 = 0;
     int width_2 = 0;
 
@@ -47,19 +47,20 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
       set_scale(&(divisible.bits[7]), get_scale(divisible.bits[7]) + 1);
     }
   }
-
   int scale = get_scale(divisible.bits[7]) - get_scale(divider.bits[7]);
   if (scale >= 0) {
     set_scale(&(tmp_res.bits[7]), scale);
   } else {
     while (scale++ < 0) tmp_res = big_x10(tmp_res);
   }
-  *result = from_big(tmp_res);
-  // if(res == 0 && is_inf(*result)) {
-  //   res = TOO_BIG;
-  // } else if(res == 0 && is_minus_inf(*result)) {
-  //   res = TOO_LITTLE;
-  // }
-
+  res = can_convert(tmp_res);
+  if (res == OK) {
+    *result = from_big(tmp_res);
+    if (check_sign(value_1.bits[3]) == check_sign(value_2.bits[3])) {
+      set_sign(&(result->bits[3]), 0);
+    } else {
+      set_sign(&(result->bits[3]), 1);
+    }
+  }
   return res;
 }

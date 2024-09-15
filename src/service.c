@@ -81,7 +81,7 @@ int is_overflow(big_decimal value) {
 }
 
 int can_convert(big_decimal value) {
-  int ret = 0;
+  int ret = OK;
   bool sign = check_sign(value.bits[7]);
   set_sign(&value.bits[7], false);
   int scale = get_scale(value.bits[7]);
