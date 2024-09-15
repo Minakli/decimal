@@ -29,6 +29,23 @@ START_TEST(test_addition_2) {
 }
 END_TEST
 
+START_TEST(test_addition_3) {
+  // 7.9228162514264337593543950335
+  s21_decimal a = {{0xffffffff, 0xffffffff, 0xffffffff, 0x1c0000}};
+  // 7.922816251426433759354395033
+  s21_decimal b = {{0x99999999, 0x99999999, 0x19999999, 0x1b0000}};
+  s21_decimal c = {{0, 0, 0, 0}};
+  int error = s21_add(a, b, &c);
+  // 15.845632502852867518708790066
+  s21_decimal expected = {{0x33333332, 0x33333333, 0x33333333, 0x1b0000}};
+
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(c.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
+
 // START_TEST(test_add_insert_3) {
 //   big_decimal a = {{3680, 0, 0, 0, 0, 0, 0, 0}};
 //   big_decimal b = {{5, 0, 0, 0, 0, 0, 0, 0}};
@@ -55,6 +72,7 @@ Suite *tests_add(void) {
 
   tcase_add_test(tc_core, test_addition_1);
   tcase_add_test(tc_core, test_addition_2);
+  tcase_add_test(tc_core, test_addition_3);
 
   suite_add_tcase(s, tc_core);
   return s;

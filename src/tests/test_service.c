@@ -98,7 +98,8 @@ END_TEST
 
 START_TEST(test_func_insert_12) {
   big_decimal value_1 = {{222, 0, 0, 0, 0, 0, 0, 0}};
-  big_decimal value_2 = big_div10(value_1);
+  big_decimal value_2 = {0};
+  big_div10(value_1, &value_2);
   ck_assert_int_eq(value_2.bits[0], 22);
 }
 END_TEST

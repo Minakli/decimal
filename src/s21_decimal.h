@@ -99,7 +99,7 @@ big_decimal big_div_big(big_decimal divisible, big_decimal divider,
 // Умножение мантиссы на 10
 big_decimal big_x10(big_decimal value);
 // Деление мантиссы на 10
-big_decimal big_div10(big_decimal value);
+big_decimal big_div10(big_decimal value, big_decimal *result);
 // Приведение к одному порядку
 void normalization(big_decimal *value_1, big_decimal *value_2);
 // Получение ширины числа

@@ -81,15 +81,24 @@ int is_overflow(big_decimal value) {
 }
 
 s21_decimal from_big(big_decimal a) {
-  // Думаю, здесь будет округление ==================
+  bool sign = check_sign(a.bits[7]);
+  set_sign(&a.bits[7], false);
   s21_decimal b = {0};
   int scale = get_scale(a.bits[7]);
   // if overflow
   if (scale > 0 && is_overflow(a)) {
-    a = big_div10(a);
+    big_decimal reminader = big_div10(a, &a);
+    big_decimal pol_litra = {5, 0, 0, 0, 0, 0, 0, 1 << 16};
+    normalization(&reminader, &pol_litra);
+    if (big_mantissa_is_equal(reminader, pol_litra) ||
+        big_mantissa_is_greater(reminader, pol_litra)) {
+      if (a.bits[0] & 1) {
+        a = big_plus_big(a, (big_decimal){1, 0, 0, 0});
+      }
+    }
     scale--;
   }
-
+  set_sign(&a.bits[7], sign);
   for (int i = 0; i < 3; i++) b.bits[i] = a.bits[i];
   b.bits[3] = a.bits[7];
   set_scale(&b.bits[3], scale);
@@ -125,11 +134,9 @@ big_decimal big_x10(big_decimal value) {
                       shift_big_decimal(value, 1, 'L'));
 }
 
-big_decimal big_div10(big_decimal value) {
+big_decimal big_div10(big_decimal value, big_decimal *result) {
   big_decimal divider = {{10, 0, 0, 0, 0, 0, 0, 0}};
-  big_decimal result = {{0, 0, 0, 0, 0, 0, 0, 0}};
-  big_div_big(value, divider, &result);
-  return result;
+  return big_div_big(value, divider, result);
 }
 
 void normalization(big_decimal *value_1, big_decimal *value_2) {
