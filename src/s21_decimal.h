@@ -85,6 +85,8 @@ bool is_not_null(big_decimal a);
 
 // Сдвиг по количеству и направлению (L or R)
 big_decimal shift_big_decimal(big_decimal a, int value, char vector);
+// можем ли перевести число из бига
+int can_convert(big_decimal value);
 // Перевод в биг децимел
 big_decimal to_big(s21_decimal a);
 // Перевод из биг в децимел

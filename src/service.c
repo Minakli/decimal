@@ -80,6 +80,34 @@ int is_overflow(big_decimal value) {
   return ret;
 }
 
+int can_convert(big_decimal value) {
+  int ret = 0;
+  bool sign = check_sign(value.bits[7]);
+  set_sign(&value.bits[7], false);
+  int scale = get_scale(value.bits[7]);
+  // if overflow
+  if (scale > 0 && is_overflow(value)) {
+    big_decimal reminader = big_div10(value, &value);
+    big_decimal pol_litra = {5, 0, 0, 0, 0, 0, 0, 1 << 16};
+    normalization(&reminader, &pol_litra);
+    if (big_mantissa_is_equal(reminader, pol_litra) ||
+        big_mantissa_is_greater(reminader, pol_litra)) {
+      if (value.bits[0] & 1) {
+        value = big_plus_big(value, (big_decimal){1, 0, 0, 0});
+      }
+    }
+    scale--;
+  }
+  if (is_overflow(value)) {
+    if (sign) {
+      ret = TOO_LITTLE;
+    } else {
+      ret = TOO_BIG;
+    }
+  }
+  return ret;
+}
+
 s21_decimal from_big(big_decimal a) {
   bool sign = check_sign(a.bits[7]);
   set_sign(&a.bits[7], false);

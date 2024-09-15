@@ -2,8 +2,6 @@
 
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int res = OK;
-  // is_inf
-  // is_inf
 
   big_decimal tmp_1 = to_big(value_1);
   big_decimal tmp_2 = to_big(value_2);
@@ -24,9 +22,10 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     }
   }
   set_scale(&result->bits[3], get_scale(tmp_1.bits[7]));
-  *result = from_big(tmp_res);
-  // is_inf
-  // is_inf
+  res = can_convert(tmp_res);
+  if (res == OK) {
+    *result = from_big(tmp_res);
+  }
   return res;
 }
 
