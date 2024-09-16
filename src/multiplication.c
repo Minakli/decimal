@@ -3,7 +3,7 @@
 #include "s21_decimal.h"
 
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  int error_status = OK;
+  int res = OK;
   if (result) {
     bool result_sign =
         check_sign(value_1.bits[3]) ^ check_sign(value_2.bits[3]);
@@ -24,38 +24,79 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
       overflow_word = 0;
     }
 
+    // big_decimal remainder = {{0}};
+    // big_decimal garb = {{0}};
+    // remainder = big_div10(temp_result, &garb);
+
+    // while (result_exponent > 0 && (remainder.bits[0] == 0)) {
+    //     big_div10(temp_result, &temp_result);
+    //     result_exponent--;
+    // }
+
+    // big_decimal remainder = {{0}};
+    // big_decimal divider = {{10}};
+    // big_decimal garb = {{0}};
+    // while ((result_exponent > 28)) {
+    //   // remainder = big_div_big(temp_result, divider, &garb);
+    //   remainder = big_div_big(temp_result, divider, &temp_result);
+    //   // if (temp_result.bits[2] == 0 && temp_result.bits[1] == 0 &&
+    //   temp_result.bits[0] == 0) {
+    //   //   *res = CONVERT_ERROR;
+    //   // } else
+    //   if (remainder.bits[0] > 5 || ((temp_result.bits[0] & 1) &&
+    //   (remainder.bits[0] == 5))) {
+    //     temp_result.bits[0]++;  // надо прибавить 1 через сложение
+    //   }
+    //   result_exponent--;
+    // }
+
+    // remainder = big_div_big(temp_result, divider, &garb);
+    // while ((result_exponent > 0) && (remainder.bits[0] == 0)) {
+    //   // remainder = big_div_big(temp, divider, &garb);
+    //   remainder = big_div_big(temp_result, divider, &temp_result);
+    //   result_exponent--;
+    // }
+
     // int remainder = 0;
-    while (result_exponent > 28 || (temp_result.bits[3] && result_exponent)) {
-      unsigned long long temp = 0;
-      // remainder = temp_result.bits[0] % 10;
-      for (int i = 5; i >= 0; --i) {
-        temp = (temp << 32) | temp_result.bits[i];
-        temp_result.bits[i] = temp / 10;
-        temp = temp % 10;
-      }
-      // if ((temp_result.bits[0] & 1) && (remainder == 5))
-      // temp_result.bits[0]++;  //банковское округление
-      result_exponent--;
+    // while (result_exponent > 28 || (temp_result.bits[3] && result_exponent))
+    // {
+    //   unsigned long long temp = 0;
+    //   // remainder = temp_result.bits[0] % 10;
+    //   for (int i = 5; i >= 0; --i) {
+    //     temp = (temp << 32) | temp_result.bits[i];
+    //     temp_result.bits[i] = temp / 10;
+    //     temp = temp % 10;
+    //   }
+    //   // if ((temp_result.bits[0] & 1) && (remainder == 5))
+    //   // temp_result.bits[0]++;  //банковское округление
+    //   result_exponent--;
+    // }
+
+    set_scale(&temp_result.bits[7], result_exponent);
+    set_sign(&temp_result.bits[7], result_sign);
+    res = can_convert(temp_result);
+    if (res == OK) {
+      *result = from_big(temp_result);
     }
 
-    if (temp_result.bits[5] != 0 || temp_result.bits[4] != 0 ||
-        temp_result.bits[3] != 0) {
-      error_status = 1;
-    }
+    // }
+    // if (temp_result.bits[5] != 0 || temp_result.bits[4] != 0 ||
+    //     temp_result.bits[3] != 0) {
+    //   res = 1;
+    // }
 
-    if (temp_result.bits[2] == 0 && temp_result.bits[1] == 0 &&
-        temp_result.bits[0] == 0 && result_exponent == 28) {
-      error_status = TOO_BIG;
-    }
+    // if (temp_result.bits[2] == 0 && temp_result.bits[1] == 0 &&
+    //     temp_result.bits[0] == 0 && result_exponent == 28) {
+    //   res = TOO_BIG;
+    // }
 
-    for (int i = 0; i < 3; i++) {
-      result->bits[i] = temp_result.bits[i];
-    }
+    // for (int i = 0; i < 3; i++) {
+    //   result->bits[i] = temp_result.bits[i];
+    // }
 
-    set_sign(&result->bits[3], result_sign);
-    set_scale(&result->bits[3], result_exponent);
+    // set_sign(&result->bits[3], result_sign);
+    // set_scale(&result->bits[3], result_exponent);
   } else
-    error_status = TOO_BIG;
-
-  return error_status;
+    res = 1;
+  return res;
 }
