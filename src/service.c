@@ -90,13 +90,13 @@ int can_convert(big_decimal value) {
   while (scale > 0 && is_overflow(value)) {
     big_decimal reminader = big_div10(value, &value);
     big_decimal pol_litra = {{5, 0, 0, 0, 0, 0, 0, 0}};
-      if (big_mantissa_is_equal(reminader, pol_litra)) {
-        if (value.bits[0] & 1) {
-          value = big_plus_big(value, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
-        }
-      } else if (big_mantissa_is_greater(reminader, pol_litra)) {
+    if (big_mantissa_is_equal(reminader, pol_litra)) {
+      if (value.bits[0] & 1) {
         value = big_plus_big(value, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
       }
+    } else if (big_mantissa_is_greater(reminader, pol_litra)) {
+      value = big_plus_big(value, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
+    }
     scale--;
   }
   if (is_overflow(value)) {
@@ -118,13 +118,13 @@ s21_decimal from_big(big_decimal a) {
   while ((scale > 0 && is_overflow(a)) || scale > 28) {
     big_decimal reminader = big_div10(a, &a);
     big_decimal pol_litra = {{5, 0, 0, 0, 0, 0, 0, 0}};
-      if (big_mantissa_is_equal(reminader, pol_litra)) {
-        if (a.bits[0] & 1) {
-          a = big_plus_big(a, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
-        }
-      } else if (big_mantissa_is_greater(reminader, pol_litra)) {
+    if (big_mantissa_is_equal(reminader, pol_litra)) {
+      if (a.bits[0] & 1) {
         a = big_plus_big(a, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
       }
+    } else if (big_mantissa_is_greater(reminader, pol_litra)) {
+      a = big_plus_big(a, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
+    }
     scale--;
   }
   set_sign(&a.bits[7], sign);

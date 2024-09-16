@@ -18,12 +18,12 @@ build_test: $(TEST_OBJECTS)
 	$(CC) $(CFLAGS) $(TEST_OBJECTS) -o ./test -lm s21_decimal.a $(CHECKFLAGS)
 s21_decimal.a: $(DECIMAL_OBJECTS)
 	ar rcs s21_decimal.a $(DECIMAL_OBJECTS)
-# s21_decimal.o:
-# 	$(CC) $(CFLAGS) -c converters.c
+s21_decimal.o:
+	$(CC) $(CFLAGS) -c $(DECIMAL_SOURSES)
 s21_decimal.o_gcov:
-	$(CC) $(CFLAGS) $(GCOVFLAGS) -c converters.c
+	$(CC) $(CFLAGS) $(GCOVFLAGS) -c $(DECIMAL_SOURSES)
 gcov_report: clean $(TEST_OBJECTS) s21_decimal.o_gcov
-	$(CC) $(CFLAGS) $(GCOVFLAGS) -o test_gcov $(TEST_OBJECTS) s21_decimal.o $(CHECKFLAGS)
+	$(CC) $(CFLAGS) $(GCOVFLAGS) -o test_gcov $(TEST_OBJECTS) $(DECIMAL_OBJECTS) $(CHECKFLAGS)
 	./test_gcov
 	geninfo . -o ./coverage.info
 	genhtml coverage.info -o gcov_report
