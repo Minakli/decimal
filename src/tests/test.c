@@ -7,7 +7,7 @@ int main(void) {
       tests_converters(), tests_division(), tests_functions(), tests_mul(),
       // tests_print_decimal(), tests_other(),
       tests_add(),
-      // tests_comparison()
+     tests_comparison()
   };
 
   for (unsigned long i = 0; i < sizeof(string_test) / sizeof(string_test[0]);
