@@ -177,6 +177,7 @@ Suite *tests_functions(void) {
   tcase_add_test(tc_core, test_func_insert_22);
   tcase_add_test(tc_core, test_func_insert_23);
   tcase_add_test(tc_core, test_func_insert_24);
+  tcase_add_test(tc_core, test_func_insert_25);
 
   suite_add_tcase(s, tc_core);
   return s;

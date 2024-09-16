@@ -34,8 +34,9 @@ void set_scale(unsigned *value, int num) {
 }
 
 bool is_not_null(big_decimal a) {
-  return (a.bits[0] == a.bits[1] == a.bits[2] == a.bits[3] == a.bits[4] ==
-          a.bits[5] == a.bits[6] == 0)
+  return (a.bits[0] == a.bits[1] && a.bits[0] == a.bits[2] &&
+          a.bits[0] == a.bits[3] && a.bits[0] == a.bits[4] &&
+          a.bits[0] == a.bits[5] && a.bits[0] == a.bits[6] && a.bits[0] == 0)
              ? false
              : true;
 }
@@ -88,12 +89,12 @@ int can_convert(big_decimal value) {
   // if overflow
   if (scale > 0 && is_overflow(value)) {
     big_decimal reminader = big_div10(value, &value);
-    big_decimal pol_litra = {5, 0, 0, 0, 0, 0, 0, 1 << 16};
+    big_decimal pol_litra = {{5, 0, 0, 0, 0, 0, 0, 1 << 16}};
     normalization(&reminader, &pol_litra);
     if (big_mantissa_is_equal(reminader, pol_litra) ||
         big_mantissa_is_greater(reminader, pol_litra)) {
       if (value.bits[0] & 1) {
-        value = big_plus_big(value, (big_decimal){1, 0, 0, 0});
+        value = big_plus_big(value, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
       }
     }
     scale--;
@@ -116,12 +117,12 @@ s21_decimal from_big(big_decimal a) {
   // if overflow
   if (scale > 0 && is_overflow(a)) {
     big_decimal reminader = big_div10(a, &a);
-    big_decimal pol_litra = {5, 0, 0, 0, 0, 0, 0, 1 << 16};
+    big_decimal pol_litra = {{5, 0, 0, 0, 0, 0, 0, 1 << 16}};
     normalization(&reminader, &pol_litra);
     if (big_mantissa_is_equal(reminader, pol_litra) ||
         big_mantissa_is_greater(reminader, pol_litra)) {
       if (a.bits[0] & 1) {
-        a = big_plus_big(a, (big_decimal){1, 0, 0, 0});
+        a = big_plus_big(a, (big_decimal){{1, 0, 0, 0, 0, 0, 0, 0}});
       }
     }
     scale--;

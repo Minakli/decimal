@@ -20,6 +20,8 @@ Suite *tests_print_decimal(void);
 
 Suite *tests_other(void);
 
+Suite *all_arithmetic_functions_cases(void);
+
 Suite *tests_add(void);
 
 Suite *tests_comparison(void);

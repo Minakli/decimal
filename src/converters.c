@@ -123,8 +123,10 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst) {
     }
 
     // is overflow
+    // Здесь заменил INT_MAX на UINT_MAX!
+    // =========================================================================================================================================
     if (src.bits[2] != 0 || src.bits[1] != 0 ||
-        src.bits[0] > (INT_MAX + source_sign)) {
+        src.bits[0] > (UINT_MAX + source_sign)) {
       res = CONVERT_ERROR;
       *dst = 0;
     }

@@ -25,15 +25,17 @@ big_decimal big_div_big(big_decimal divisible, big_decimal divider,
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   big_decimal divisible = to_big(value_1);
   big_decimal divider = to_big(value_2);
-  big_decimal tmp_res = {{0}};
+  big_decimal tmp_res = {{0, 0, 0, 0, 0, 0, 0, 0}};
   int res = OK;
-
-  if (!is_not_null(divider)) {
+  if (!is_not_null(divisible) && is_not_null(divider)) {
+    res = TOO_BIG;
+  } else if (!is_not_null(divider)) {
     res = DIV_BY_ZERO;
+  } else if (result == NULL) {
+    res = 1;
   } else {
     int width_1 = 0;
     int width_2 = 0;
-
     while ((width_2 > width_1 || big_mantissa_is_less(divisible, divider)) &&
            get_scale(divisible.bits[7]) < 28) {
       divisible = big_x10(divisible);

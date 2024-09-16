@@ -614,7 +614,7 @@ END_TEST
 
 START_TEST(float_minus_inf) {
   float value = -INFINITY;
-  s21_decimal a = {{0, 0, 1, 7 << 16}};
+  // s21_decimal a = {{0, 0, 1, 7 << 16}};
   s21_decimal result = {{0}};
   s21_decimal expected = {{0, 0, 0, 0}};
   int error = s21_from_float_to_decimal(value, &result);
