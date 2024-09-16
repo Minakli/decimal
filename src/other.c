@@ -29,7 +29,8 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
     error = s21_sub(value, *result, &sub_res);
     if (error == OK) {
       if (sign &&
-          !(sub_res.bits[0] == sub_res.bits[1]  && sub_res.bits[1] == sub_res.bits[2] && sub_res.bits[2] == 0)) {
+          !(sub_res.bits[0] == sub_res.bits[1] &&
+            sub_res.bits[1] == sub_res.bits[2] && sub_res.bits[2] == 0)) {
         error = s21_sub(*result, ((s21_decimal){{1, 0, 0, 0}}), result);
       }
     }

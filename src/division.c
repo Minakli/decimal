@@ -37,31 +37,33 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     int width_1 = 0;
     int width_2 = 0;
     while ((width_2 > width_1 || big_mantissa_is_less(divisible, divider)) &&
-           get_scale(divisible.bits[7]) < 28) {
+           get_scale(divisible.bits[7]) < 35) {
       divisible = big_x10(divisible);
       set_scale(&divisible.bits[7], (get_scale(divisible.bits[7]) + 1));
       width_1 = get_width(divisible);
     }
-
+    int scale = get_scale(divisible.bits[7]);
     while (is_not_null(big_div_big(divisible, divider, &tmp_res)) &&
-           get_scale(divisible.bits[7]) < 28) {
+           scale < 35) {
       divisible = big_x10(divisible);
-      set_scale(&(divisible.bits[7]), get_scale(divisible.bits[7]) + 1);
+      scale++;
+      set_scale(&(divisible.bits[7]), scale);
     }
-  }
-  int scale = get_scale(divisible.bits[7]) - get_scale(divider.bits[7]);
-  if (scale >= 0) {
-    set_scale(&(tmp_res.bits[7]), scale);
-  } else {
-    while (scale++ < 0) tmp_res = big_x10(tmp_res);
-  }
-  res = can_convert(tmp_res);
-  if (res == OK) {
-    *result = from_big(tmp_res);
-    if (check_sign(value_1.bits[3]) == check_sign(value_2.bits[3])) {
-      set_sign(&(result->bits[3]), 0);
+
+    scale = get_scale(divisible.bits[7]) - get_scale(divider.bits[7]);
+    if (scale >= 0) {
+      set_scale(&(tmp_res.bits[7]), scale);
     } else {
-      set_sign(&(result->bits[3]), 1);
+      while (scale++ < 0) tmp_res = big_x10(tmp_res);
+    }
+    if (check_sign(value_1.bits[3]) == check_sign(value_2.bits[3])) {
+      set_sign(&(tmp_res.bits[7]), 0);
+    } else {
+      set_sign(&(tmp_res.bits[7]), 1);
+    }
+    res = can_convert(tmp_res);
+    if (res == OK) {
+      *result = from_big(tmp_res);
     }
   }
   return res;
