@@ -122,11 +122,8 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst) {
       src.bits[0] = temp / 10;
     }
 
-    // is overflow
-    // Здесь заменил INT_MAX на UINT_MAX!
-    // =========================================================================================================================================
     if (src.bits[2] != 0 || src.bits[1] != 0 ||
-        src.bits[0] > (UINT_MAX + source_sign)) {
+        src.bits[0] > (unsigned)(INT_MAX + source_sign)) {
       res = CONVERT_ERROR;
       *dst = 0;
     }
@@ -171,8 +168,8 @@ s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale,
   big_decimal garb = {{0}};
   // remainder = big_div_big(temp, divider, &garb);
 
-  while ((*source_scale > 28)) {
-    remainder = big_div_big(temp, divider, &garb);
+  while (*source_scale > 28) {
+    // remainder = big_div_big(temp, divider, &garb);
     remainder = big_div_big(temp, divider, &temp);
     if (temp.bits[2] == 0 && temp.bits[1] == 0 && temp.bits[0] == 0) {
       *res = CONVERT_ERROR;
@@ -183,7 +180,7 @@ s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale,
   }
 
   remainder = big_div_big(temp, divider, &garb);
-  while (((*source_scale > 0) && (remainder.bits[0] == 0))) {
+  while ((*source_scale > 0) && (remainder.bits[0] == 0)) {
     // remainder = big_div_big(temp, divider, &garb);
     remainder = big_div_big(temp, divider, &temp);
     (*source_scale)--;
