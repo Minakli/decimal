@@ -22,4 +22,6 @@ Suite *tests_other(void);
 
 Suite *tests_add(void);
 
+Suite *tests_comparison(void);
+
 #endif
