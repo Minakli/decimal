@@ -1,17 +1,5 @@
 #include "s21_decimal.h"
 
-void print_32_binary(int a) {
-  printf("-- ");
-  for (int i = 31; i > -1; i--) {
-    printf("%d", (a >> i) & 1);
-  }
-  printf("\n");
-}
-
-void print_binary(big_decimal a) {
-  for (int i = 0; i < 8; i++) print_32_binary(a.bits[i]);
-}
-
 bool check_bit(big_decimal a, int num) {
   return (a.bits[num / 32] >> (num % 32)) & 1;
 }

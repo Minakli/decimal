@@ -480,9 +480,6 @@ START_TEST(s21_sub_3) {
   s21_decimal result;
   int return_value = s21_sub(dec_1, dec_2, &result);
   ck_assert_int_eq(return_value, 0);
-  print_32_binary(dec_check.bits[0]);
-  // printf("\n");
-  print_32_binary(result.bits[0]);
   ck_assert_uint_eq(dec_check.bits[0], result.bits[0]);
   ck_assert_uint_eq(dec_check.bits[1], result.bits[1]);
   ck_assert_uint_eq(dec_check.bits[2], result.bits[2]);

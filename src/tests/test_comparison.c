@@ -131,6 +131,22 @@ START_TEST(test_is_less_1) {
   ck_assert_int_eq(s21_is_less(big_small, small), 1);
 }
 
+START_TEST(test_is_less_or_equal) {
+  s21_decimal small = {{1}};
+  set_sign(&(small.bits[3]), 1);
+  s21_decimal big_small = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
+  set_sign(&(big_small.bits[3]), 1);
+  ck_assert_int_eq(s21_is_less_or_equal(big_small, small), 1);
+}
+
+START_TEST(test_is_greater_or_equal) {
+  s21_decimal small = {{1}};
+  set_sign(&(small.bits[3]), 1);
+  s21_decimal big_small = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
+  set_sign(&(big_small.bits[3]), 1);
+  ck_assert_int_eq(s21_is_greater_or_equal(big_small, small), 0);
+}
+
 Suite *tests_comparison(void) {
   Suite *s = suite_create("Comparison");
   TCase *tc_core = tcase_create("Core");
@@ -147,6 +163,8 @@ Suite *tests_comparison(void) {
   tcase_add_test(tc_core, test_is_greater_4);
   tcase_add_test(tc_core, test_is_not_equal);
   tcase_add_test(tc_core, test_is_less_1);
+  tcase_add_test(tc_core, test_is_less_or_equal);
+  tcase_add_test(tc_core, test_is_greater_or_equal);
   suite_add_tcase(s, tc_core);
   return s;
 }
