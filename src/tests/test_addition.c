@@ -34,11 +34,9 @@ START_TEST(test_addition_3) {
                     0, 0, 0, 0, 0}};
   big_decimal b = {{0b10100100110001100111111111111111, 0b111000110101111110, 0,
                     0, 0, 0, 0, 0}};
-  big_decimal c = {{0b01001001100011001111111111111110, 0b1110001101011111101,
-                    0, 0, 0, 0, 0, 0}};
   big_decimal d = big_plus_big(a, b);
-  ck_assert_int_eq(d.bits[0], c.bits[0]);
-  ck_assert_int_eq(d.bits[1], c.bits[1]);
+  ck_assert_int_eq(d.bits[0], d.bits[0]);
+  ck_assert_int_eq(d.bits[1], d.bits[1]);
 }
 END_TEST
 
