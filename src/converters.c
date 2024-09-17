@@ -1,13 +1,8 @@
 #include <limits.h>
-// #include <math.h>  //надо вынести в хедер
-#include <limits.h>
 #include <math.h>
 #include <string.h>
 
 #include "s21_decimal.h"
-
-#define S21_MAX_FLOAT 7.9228162514264337593543950335e+28
-#define S21_MIN_FLOAT 1e-28
 
 s21_decimal increase_scale_to_zero(s21_decimal src, int *source_scale,
                                    bool *res);
@@ -38,7 +33,6 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
 }
 
 int s21_from_float_to_decimal(float src, s21_decimal *dst) {
-  bool is_zero = (src == 0);
   bool res = OK;
   bool scale_sign = OK;
   int source_scale = 0;
@@ -50,7 +44,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
     snprintf(string_source, 16, "%e", src);
     for (int i = 0; string_source[i]; i++) {
       if (string_source[i] == '-') {
-        bool result_sign = CONVERT_ERROR;
+        bool result_sign = true;
         set_sign(&dst->bits[3], result_sign);
         i++;
       }
@@ -59,7 +53,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
       } else if (string_source[i] == 'e') {
         i++;
         if (string_source[i] == '-') {
-          scale_sign = CONVERT_ERROR;
+          scale_sign = true;
         }
         i++;
         if ((string_source[i] >= '0' && string_source[i] <= '9')) {
@@ -70,37 +64,21 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
         }
       }
     }
-    if (!scale_sign) {
-      source_scale = -source_scale;
-    }
+    if (!scale_sign) source_scale = -source_scale;
     source_scale += 6;
-
     *dst = increase_scale_to_zero(*dst, &source_scale, &res);
-    if (dst->bits[2] != 0 || dst->bits[1] != 0 || dst->bits[0] != 0) {
-      *dst = decrease_scale_to_zero(*dst, &source_scale, &res);
-    }
-
+    *dst = decrease_scale_to_zero(*dst, &source_scale, &res);
     if (dst->bits[2] == 0 && dst->bits[1] == 0 && dst->bits[0] == 0 &&
         source_scale > 0) {
       res = CONVERT_ERROR;
     }
-
     if (source_scale >= 0 && source_scale <= 28) {
       set_scale(&dst->bits[3], source_scale);
     } else {
       res = CONVERT_ERROR;
-      for (int i = 0; i < 4; i++) {
-        dst->bits[i] = 0;
-      }
-    }
-    if (is_zero) {
-      res = OK;
-      for (int i = 0; i < 4; i++) {
-        dst->bits[i] = 0;
-      }
+      for (int i = 0; i < 4; i++) dst->bits[i] = 0;
     }
   }
-
   return res;
 }
 
@@ -164,25 +142,21 @@ s21_decimal decrease_scale_to_zero(s21_decimal src, int *source_scale,
                                    bool *res) {
   big_decimal temp = to_big(src);
   big_decimal remainder = {{0}};
-  big_decimal divider = {{10}};
-  big_decimal garb = {{0}};
-  // remainder = big_div_big(temp, divider, &garb);
+  big_decimal junk = {{0}};
 
   while (*source_scale > 28) {
-    // remainder = big_div_big(temp, divider, &garb);
-    remainder = big_div_big(temp, divider, &temp);
+    remainder = big_div10(temp, &temp);
     if (temp.bits[2] == 0 && temp.bits[1] == 0 && temp.bits[0] == 0) {
       *res = CONVERT_ERROR;
     } else if (remainder.bits[0] > 5) {
-      temp.bits[0]++;  // надо прибавить 1 через сложение
+      temp.bits[0]++;
     }
     (*source_scale)--;
   }
 
-  remainder = big_div_big(temp, divider, &garb);
+  remainder = big_div10(temp, &junk);
   while ((*source_scale > 0) && (remainder.bits[0] == 0)) {
-    // remainder = big_div_big(temp, divider, &garb);
-    remainder = big_div_big(temp, divider, &temp);
+    remainder = big_div10(temp, &temp);
     (*source_scale)--;
   }
 

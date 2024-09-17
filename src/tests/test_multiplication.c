@@ -1,18 +1,5 @@
 #include "test.h"
 
-// #define DECIMAL_SIZE 128
-// #define DECIMAL_SIGN_BIT 127
-// #define DECIMAL_MANTISSA_SIZE 96
-// #define DECIMAL_WORD_SIZE 32
-// #define DECIMAL_WORD_COUNT 3
-// #define DECIMAL_SIGN_SHIFT 31              // 127 % 32 = 31
-// #define DECIMAL_SCALE_MAX_VALUE 28         // 0b00011100
-// #define DECIMAL_SCALE_SHIFT 16             // 16-23
-// #define DECIMAL_SCALE_SIZE_MASK 0xFF       // 0b11111111 8 bits
-// #define DECIMAL_MAX_WORD_VALUE 0xFFFFFFFF  //
-// 0b11111111111111111111111111111111 #define
-// DECIMAL_MAX_VALUE 7.9228162514264337593543950335e28 #define EPSILON 1e-6
-
 START_TEST(mul_null) {
   s21_decimal value_1 = {{2, 0, 0, 0}};
   s21_decimal value_2 = {{3, 0, 0, 0}};
@@ -194,12 +181,20 @@ START_TEST(mul_big_3) {
   s21_decimal value_2 = {{1000000001, 0, 0, 9 << 16}};
   s21_decimal result = {{0}};
   int error = s21_mul(value_1, value_2, &result);
-  // s21_decimal expected = {{0b10100001101100100011100111100010,
-  // 0b01101000110101101110001000001001, 0b111111101110, 9 << 16}}; for (int i =
-  // 0; i < 4; i++) {
-  //   ck_assert_int_eq(result.bits[i], expected.bits[i]);
-  // }
   ck_assert_int_eq(error, 1);
+}
+END_TEST
+
+START_TEST(mul_big_4) {
+  s21_decimal value_1 = {{0b11111111111111111111111111111111,
+                          0b11111111111111111111111111111111,
+                          0b11111111111111111111111111111111, 0}};
+  s21_decimal value_2 = {{0b11111111111111111111111111111111,
+                          0b11111111111111111111111111111111,
+                          0b11111111111111111111111111111111, 1 << 31}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  ck_assert_int_eq(error, 2);
 }
 END_TEST
 
@@ -217,54 +212,43 @@ START_TEST(mul_small) {
 }
 END_TEST
 
-// START_TEST(mul_bank_round) {
-//   s21_decimal value_1 = {{15, 0, 0, 27 << 16}};
-//   s21_decimal value_2 = {{1, 0, 0, 2 << 16}};
-//   s21_decimal result = {{0}};
-//   int error = s21_mul(value_1, value_2, &result);
-//   s21_decimal expected = {{2, 0, 0, 28 << 16}};
-//   for (int i = 0; i < 4; i++) {
-//     ck_assert_int_eq(result.bits[i], expected.bits[i]);
-//   }
-//   ck_assert_int_eq(error, 0);
-// }
-// END_TEST
+START_TEST(mul_bank_round) {
+  s21_decimal value_1 = {{15, 0, 0, 27 << 16}};
+  s21_decimal value_2 = {{1, 0, 0, 2 << 16}};
+  s21_decimal result = {{0}};
+  int error = s21_mul(value_1, value_2, &result);
+  s21_decimal expected = {{2, 0, 0, 28 << 16}};
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 0);
+}
+END_TEST
 
-// банковское округление не работает:
-// START_TEST(mul_bank_round) {
-//   s21_decimal decimal1 = {{-1, 0, 0, 0x1C0001}};
-//   s21_decimal decimal2 = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x140000}};
-//   s21_decimal result;
-//   int code = s21_mul(decimal1, decimal2, &result);
+START_TEST(mul_bank_round_2) {
+  s21_decimal value3 = {{2469, 0, 0, 15 << 16}};
+  s21_decimal value4 = {{50, 0, 0, 15 << 16}};
+  s21_decimal result2 = {{0}};
+  s21_decimal expected2 = {{1234, 0, 0, 28 << 16}};
 
-//   ck_assert_int_ne(code, 0);
-// }
-// END_TEST
+  int error = s21_mul(value3, value4, &result2);
+  ck_assert_int_eq(error, 0);
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result2.bits[i], expected2.bits[i]);
+  }
 
-// START_TEST(mul_bank_round_2) {
-//   s21_decimal value3 = {{2469, 0, 0, 15 << 16}};
-//   s21_decimal value4 = {{50, 0, 0, 15 << 16}};
-//   s21_decimal result2 = {{0}};
-//   s21_decimal expected2 = {{1234, 0, 0, 28 << 16}};
+  s21_decimal value5 = {{1717986917, 1717986918, 1717986918, 0}};
+  s21_decimal value6 = {{25, 0, 0, 1 << 16}};
+  s21_decimal result3 = {{0}};
+  s21_decimal expected3 = {{0xFFFFFFFF - 3, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
 
-//   int error = s21_mul(value3, value4, &result2);
-//   ck_assert_int_eq(error, 0);
-//   for (int i = 0; i < 4; i++) {
-//     ck_assert_int_eq(result2.bits[i], expected2.bits[i]);
-//   }
-
-//   s21_decimal value5 = {{1717986917, 1717986918, 1717986918, 0}};
-//   s21_decimal value6 = {{25, 0, 0, 1 << 16}};
-//   s21_decimal result3 = {{0}};
-//   s21_decimal expected3 = {{0xFFFFFFFF - 3, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
-
-//   error = s21_mul(value5, value6, &result3);
-//   ck_assert_int_eq(error, 0);
-//   for (int i = 0; i < 4; i++) {
-//     ck_assert_int_eq(result3.bits[i], expected3.bits[i]);
-//   }
-// }
-// END_TEST
+  error = s21_mul(value5, value6, &result3);
+  ck_assert_int_eq(error, 0);
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result3.bits[i], expected3.bits[i]);
+  }
+}
+END_TEST
 
 Suite *tests_mul(void) {
   Suite *s = suite_create("Mul");
@@ -283,9 +267,10 @@ Suite *tests_mul(void) {
   tcase_add_test(tc_core, mul_big);
   tcase_add_test(tc_core, mul_big_2);
   tcase_add_test(tc_core, mul_big_3);
+  tcase_add_test(tc_core, mul_big_4);
   tcase_add_test(tc_core, mul_small);
-  // tcase_add_test(tc_core, mul_bank_round);
-  // tcase_add_test(tc_core, mul_bank_round_2);
+  tcase_add_test(tc_core, mul_bank_round);
+  tcase_add_test(tc_core, mul_bank_round_2);
 
   suite_add_tcase(s, tc_core);
   return s;

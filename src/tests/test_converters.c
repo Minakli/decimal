@@ -291,12 +291,24 @@ END_TEST
 START_TEST(float_zero) {
   float value = 0;
   s21_decimal result = {{0}};
-  s21_decimal expected = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
   int error = s21_from_float_to_decimal(value, &result);
   for (int i = 0; i < 4; i++) {
     ck_assert_int_eq(result.bits[i], expected.bits[i]);
   }
   ck_assert_int_eq(error, 0);
+}
+END_TEST
+
+START_TEST(float_small_2) {
+  float value = 8e-29;
+  s21_decimal result = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
+  int error = s21_from_float_to_decimal(value, &result);
+  for (int i = 0; i < 4; i++) {
+    ck_assert_int_eq(result.bits[i], expected.bits[i]);
+  }
+  ck_assert_int_eq(error, 1);
 }
 END_TEST
 
@@ -614,7 +626,6 @@ END_TEST
 
 START_TEST(float_minus_inf) {
   float value = -INFINITY;
-  // s21_decimal a = {{0, 0, 1, 7 << 16}};
   s21_decimal result = {{0}};
   s21_decimal expected = {{0, 0, 0, 0}};
   int error = s21_from_float_to_decimal(value, &result);
@@ -702,6 +713,7 @@ Suite *tests_converters(void) {
   tcase_add_test(tc_core, float_round_3);
   tcase_add_test(tc_core, float_round_4);
   tcase_add_test(tc_core, float_zero);
+  tcase_add_test(tc_core, float_small_2);
   tcase_add_test(tc_core, float_null);
   tcase_add_test(tc_core, float_0);
   tcase_add_test(tc_core, float_1);
