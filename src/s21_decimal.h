@@ -124,7 +124,4 @@ int big_mantissa_is_equal(big_decimal value_1, big_decimal value_2);
 // Не равно
 int big_mantissa_is_not_equal(big_decimal value_1, big_decimal value_2);
 
-void divide_96bit_by_10(unsigned int *high, unsigned int *mid,
-                        unsigned int *low, unsigned int *remainder);
-
 #endif  //  SRC_S21_DECIMAL_H_
