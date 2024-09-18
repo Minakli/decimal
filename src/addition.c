@@ -19,8 +19,6 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
       } else if (big_mantissa_is_less(tmp_1, tmp_2)) {
         tmp_res = big_minus_big(tmp_2, tmp_1);
         set_sign(&(tmp_res.bits[7]), check_sign(tmp_2.bits[7]));
-      } else {
-        //
       }
     }
     set_scale(&result->bits[3], get_scale(tmp_1.bits[7]));
