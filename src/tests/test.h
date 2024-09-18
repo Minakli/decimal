@@ -16,8 +16,6 @@ Suite *tests_functions(void);
 
 Suite *tests_mul(void);
 
-Suite *tests_print_decimal(void);
-
 Suite *tests_other(void);
 
 Suite *all_arithmetic_functions_cases(void);

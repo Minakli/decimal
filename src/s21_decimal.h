@@ -68,6 +68,8 @@ int s21_round(s21_decimal value, s21_decimal *result);
 void print_32_binary(int a);
 // Печать децимел в двоичном виде (УБРАТЬ!)
 void print_binary(big_decimal a);
+// Функция сравнения
+int compare_decimals(s21_decimal value_1, s21_decimal value_2);
 // Проверка указанного бита
 bool check_bit(big_decimal a, int num);
 // Установка указанного бита указанным значением
@@ -107,6 +109,8 @@ void normalization(big_decimal *value_1, big_decimal *value_2);
 // Получение ширины числа
 int get_width(big_decimal value);
 
+// Сравнение мантисс
+int big_mantissa_compare(big_decimal value_1, big_decimal value_2);
 // Меньше
 int big_mantissa_is_less(big_decimal value_1, big_decimal value_2);
 // Меньше или равно
@@ -122,7 +126,5 @@ int big_mantissa_is_not_equal(big_decimal value_1, big_decimal value_2);
 
 void divide_96bit_by_10(unsigned int *high, unsigned int *mid,
                         unsigned int *low, unsigned int *remainder);
-
-void print_decimal(s21_decimal a, char *buffer, size_t buffer_size);
 
 #endif  //  SRC_S21_DECIMAL_H_

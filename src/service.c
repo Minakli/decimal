@@ -180,58 +180,38 @@ int get_width(big_decimal value) {
 }
 // Проверка на бесконечность или переполнение
 
-int big_mantissa_is_less(big_decimal value_1, big_decimal value_2) {
-  int result = -1;
-  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(value_1, i) < check_bit(value_2, i)   ? 1
-             : check_bit(value_1, i) > check_bit(value_2, i) ? 0
-                                                             : -1;
-  }
-  return (result == 1) ? 1 : 0;
-}
-
-int big_mantissa_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
-  int result = -1;
-  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(value_1, i) < check_bit(value_2, i)   ? 1
-             : check_bit(value_1, i) > check_bit(value_2, i) ? 0
-                                                             : -1;
-  }
-  return (result != 0) ? 1 : 0;
-}
-
-int big_mantissa_is_greater(big_decimal value_1, big_decimal value_2) {
-  int result = -1;
-  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(value_1, i) > check_bit(value_2, i)   ? 1
-             : check_bit(value_1, i) < check_bit(value_2, i) ? 0
-                                                             : -1;
-  }
-  return (result == 1) ? 1 : 0;
-}
-
-int big_mantissa_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
-  int result = -1;
-  for (int i = 32 * 7 - 1; i >= 0 && result == -1; i--) {
-    result = check_bit(value_1, i) > check_bit(value_2, i)   ? 1
-             : check_bit(value_1, i) < check_bit(value_2, i) ? 0
-                                                             : -1;
-  }
-  return (result != 0) ? 1 : 0;
-}
-
-int big_mantissa_is_equal(big_decimal value_1, big_decimal value_2) {
-  int result = 1;
-  for (int i = 32 * 7 - 1; i >= 0 && result; i--) {
-    if (check_bit(value_1, i) != check_bit(value_2, i)) result = 0;
+int big_mantissa_compare(big_decimal value_1, big_decimal value_2) {
+  int result = 0;
+  for (int i = 32 * 7 - 1; i >= 0 && result == 0; i--) {
+    int bit1 = check_bit(value_1, i);
+    int bit2 = check_bit(value_2, i);
+    result = (bit1 < bit2) ? -1 : (bit1 > bit2) ? 1 : 0;
   }
   return result;
 }
 
+int big_mantissa_is_less(big_decimal value_1, big_decimal value_2) {
+  return big_mantissa_compare(value_1, value_2) == -1;
+}
+
+int big_mantissa_is_less_or_equal(big_decimal value_1, big_decimal value_2) {
+  int compare_result = big_mantissa_compare(value_1, value_2);
+  return compare_result == -1 || compare_result == 0;
+}
+
+int big_mantissa_is_greater(big_decimal value_1, big_decimal value_2) {
+  return big_mantissa_compare(value_1, value_2) == 1;
+}
+
+int big_mantissa_is_greater_or_equal(big_decimal value_1, big_decimal value_2) {
+  int compare_result = big_mantissa_compare(value_1, value_2);
+  return compare_result == 1 || compare_result == 0;
+}
+
+int big_mantissa_is_equal(big_decimal value_1, big_decimal value_2) {
+  return big_mantissa_compare(value_1, value_2) == 0;
+}
+
 int big_mantissa_is_not_equal(big_decimal value_1, big_decimal value_2) {
-  int result = 0;
-  for (int i = 32 * 7 - 1; i >= 0 && result == 0; i--) {
-    if (check_bit(value_1, i) != check_bit(value_2, i)) result = 1;
-  }
-  return (result == 1) ? 1 : 0;
+  return big_mantissa_compare(value_1, value_2) != 0;
 }
