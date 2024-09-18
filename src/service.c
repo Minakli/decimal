@@ -1,5 +1,17 @@
 #include "s21_decimal.h"
 
+big_decimal big_plus_big(big_decimal value_1, big_decimal value_2) {
+  big_decimal result = {{0, 0, 0, 0, 0, 0, 0, 0}};
+  int memory = 0, sum = 0;
+  for (int i = 0; i < 32 * 7; i++) {
+    sum = check_bit(value_1, i) + check_bit(value_2, i) + memory;
+    memory = sum > 1 ? 1 : 0;
+    set_bit(&result, i, sum % 2);
+  }
+  result.bits[7] = value_1.bits[7];
+  return result;
+}
+
 bool check_bit(big_decimal a, int num) {
   return (a.bits[num / 32] >> (num % 32)) & 1;
 }
@@ -122,18 +134,6 @@ s21_decimal from_big(big_decimal a) {
   return b;
 }
 
-big_decimal big_plus_big(big_decimal value_1, big_decimal value_2) {
-  big_decimal result = {{0, 0, 0, 0, 0, 0, 0, 0}};
-  int memory = 0, sum = 0;
-  for (int i = 0; i < 32 * 7; i++) {
-    sum = check_bit(value_1, i) + check_bit(value_2, i) + memory;
-    memory = sum > 1 ? 1 : 0;
-    set_bit(&result, i, sum % 2);
-  }
-  result.bits[7] = value_1.bits[7];
-  return result;
-}
-
 big_decimal big_minus_big(big_decimal value_1, big_decimal value_2) {
   big_decimal result = {{0, 0, 0, 0, 0, 0, 0, 0}};
   int debt = 0, sum = 0;
@@ -178,7 +178,6 @@ int get_width(big_decimal value) {
   }
   return width;
 }
-// Проверка на бесконечность или переполнение
 
 int big_mantissa_compare(big_decimal value_1, big_decimal value_2) {
   int result = 0;
